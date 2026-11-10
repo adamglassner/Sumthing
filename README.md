@@ -1,36 +1,39 @@
-# sumthing
+# Sumthing
 
-A calculator app, planned for Windows, Windows Classic, Linux, macOS, iPhone and Android.
+A calculator for Windows 10 and 11, by Bytehawk Studio. It does what the Windows calculator does and adds a paper tape, sums you can type in words, a unit and currency converter, and a few everyday tools.
 
-## Status
+**Download:** the latest **Sumthing-x.y.z-Setup.exe** (installer) or **Sumthing-x.y.z-win-x64.zip** (portable) from [Releases](../../releases), or install it from the **Bytehawk Studio Launcher**, which keeps it up to date.
 
-Design stage. The first mockup is the **Windows (Standard mode)** screen.
+## What's in it
 
-- Live, clickable mockup: https://claude.ai/artifact/9Y1iwWP1fHN4JinUygw8Tv
-- Source: [`mockups/windows/standard.dc.html`](mockups/windows/standard.dc.html)
+| | |
+|---|---|
+| **Standard** | The everyday calculator: memory, history, %, x², √x, 1/x, +/−. Exact decimal maths, so 0.1 + 0.2 = 0.3. |
+| **Three looks** | Modern **Light** and **Dark** (or follow Windows), with seven accent colours, and **Classic**, the Windows 7 calculator with its View / Edit / Help menus. |
+| **Tape** | A paper roll beside the calculator that prints every step like an adding machine. Click beside a line to add a note; copy, save (.txt) or print it. |
+| **Type-a-sum** | A notepad where every line is a sum, answered as you type: `12% of 340`, `80 + 15%`, `20% off 80`, `rent = 1,250` then `rent * 12`, `total`, `sqrt 81`, `5k`. Click an answer to copy it. |
+| **Converter** | Length, weight, temperature, volume, area, speed, time, data, fuel economy and **currency** (daily European Central Bank rates via the free [Frankfurter](https://frankfurter.dev) service, kept for offline use). Shows the amount in every unit at once. |
+| **Everyday tools** | Tip and bill splitter, percent change, discount and sales tax, date difference (with weekdays, and adding or taking away days). |
 
-### What the Windows mockup covers
+## Keyboard
 
-- Windows 11–style window: title bar, "Standard" header, history button
-- Result display with the running expression above it
-- Memory row: MC, MR, M+, M−, MS
-- Full keypad: %, CE, C, backspace, 1/x, x², √x, ÷ × − +, ±, decimal, =
-- History panel (tap a past result to recall it)
-- Light and dark themes, adjustable accent colour
+| Keys | Does |
+|---|---|
+| `0`–`9` `.` `+` `-` `*` `/` `%` | Numbers and operators |
+| `Enter` / `=` | Equals |
+| `Backspace`, `Delete`, `Esc` | Delete a digit, clear entry (CE), clear (C) |
+| `F9`, `R`, `Q`, `@` | +/−, 1/x, x², √x |
+| `Ctrl+M` `Ctrl+R` `Ctrl+L` `Ctrl+P` `Ctrl+Q` | Memory store, recall, clear, add, subtract |
+| `Ctrl+C`, `Ctrl+V` | Copy the result; paste a number or a whole sum |
+| `Ctrl+1`–`Ctrl+4` | Standard, Type-a-sum, Converter, Everyday tools |
+| `Ctrl+T`, `Ctrl+H`, `Ctrl+,` | Tape, history, settings |
 
-## Layout
+## Built with
 
-```
-mockups/
-  windows/
-    standard.dc.html   Windows Standard-mode screen (design canvas source)
-    canvas.json        Canvas layout for the mockup
-```
+C# / WPF on .NET 8, published as one self-contained `Sumthing.exe` (no .NET install needed), with an Inno Setup installer. Same setup as [Draftly](https://github.com/adamglassner/draftly). See [BUILD.md](BUILD.md) to build it yourself.
 
-## Roadmap
+Settings, history, memory, the tape and your Type-a-sum sheet are kept in `%APPDATA%\Sumthing`. Uninstalling leaves them there.
 
-- [x] Windows mockup — Standard mode
-- [ ] Windows mockup — Scientific mode
-- [ ] Windows Classic mockup
-- [ ] Linux, macOS, iPhone and Android mockups
-- [ ] App implementation
+`mockups/` holds the original design mockup.
+
+© 2026 Bytehawk Studio

@@ -1,0 +1,64 @@
+<UserControl x:Class="Sumthing.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer x:Name="Scroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="14,0,14,16">
+            <TextBlock Text="Look" Style="{StaticResource SectionHeader}" Margin="0,6,0,8"/>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <RadioButton x:Name="ThemeSystem" GroupName="theme" Content="Follow Windows (light or dark)" Margin="0,2" Click="Theme_Click" Tag="System"/>
+                    <RadioButton x:Name="ThemeLight" GroupName="theme" Content="Light" Margin="0,2" Click="Theme_Click" Tag="Light"/>
+                    <RadioButton x:Name="ThemeDark" GroupName="theme" Content="Dark" Margin="0,2" Click="Theme_Click" Tag="Dark"/>
+                    <RadioButton x:Name="ThemeClassic" GroupName="theme" Margin="0,2" Click="Theme_Click" Tag="Classic">
+                        <TextBlock TextWrapping="Wrap">Classic <Run Foreground="{DynamicResource TextSecondary}" Text="(the Windows 7 calculator look, with a menu bar)"/></TextBlock>
+                    </RadioButton>
+                    <StackPanel x:Name="AccentPanel" Margin="0,12,0,0">
+                        <TextBlock Text="Accent colour" Style="{StaticResource Hint}" Margin="0,0,0,6"/>
+                        <WrapPanel x:Name="Swatches"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Numbers" Style="{StaticResource SectionHeader}"/>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <CheckBox x:Name="Separators" Content="Show thousands separators (1,234,567)" Click="Option_Click"/>
+                    <CheckBox x:Name="KeepSession" Content="Keep history, memory and the tape after closing Sumthing" Margin="0,8,0,0" Click="Option_Click"/>
+                    <CheckBox x:Name="OnTop" Content="Keep Sumthing on top of other windows" Margin="0,8,0,0" Click="Option_Click"/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock x:Name="ShortcutsHeader" Text="Keyboard shortcuts" Style="{StaticResource SectionHeader}"/>
+            <Border Style="{StaticResource Card}">
+                <Grid x:Name="ShortcutGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </Border>
+
+            <TextBlock x:Name="AboutHeader" Text="About" Style="{StaticResource SectionHeader}"/>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/sumthing-256.png" Width="48" Height="48" Margin="0,0,12,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Sumthing" FontSize="18" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="VersionText" Foreground="{DynamicResource TextSecondary}"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}">
+                        © 2026 Bytehawk Studio ·
+                        <Hyperlink NavigateUri="https://github.com/adamglassner/sumthing" RequestNavigate="Link_Navigate">github.com/adamglassner/sumthing</Hyperlink>
+                    </TextBlock>
+                    <TextBlock x:Name="RatesCredit" Margin="0,6,0,0" TextWrapping="Wrap" Style="{StaticResource Hint}"
+                               Text="Exchange rates: European Central Bank reference rates, via the free Frankfurter service."/>
+                    <TextBlock Text="What's new" FontWeight="SemiBold" Margin="0,14,0,4"/>
+                    <TextBox x:Name="ChangelogText" IsReadOnly="True" TextWrapping="Wrap" FontSize="12.5" MaxHeight="260"
+                             VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" AutomationProperties.Name="What's new"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,58 @@
+<UserControl x:Class="Sumthing.Views.ConverterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel Margin="12,6,12,10">
+        <ComboBox x:Name="CategoryBox" DockPanel.Dock="Top" HorizontalAlignment="Left" MinWidth="200" Margin="0,0,0,10"
+                  SelectionChanged="Category_Changed" AutomationProperties.Name="What to convert"/>
+
+        <Border DockPanel.Dock="Top" Style="{StaticResource Card}" Margin="0">
+            <StackPanel>
+                <TextBlock Text="From" Style="{StaticResource Hint}" Margin="0,0,0,4"/>
+                <TextBox x:Name="FromValue" FontSize="24" FontFamily="{DynamicResource DisplayFont}" Text="1"
+                         TextChanged="Value_Changed" AutomationProperties.Name="Amount to convert"/>
+                <ComboBox x:Name="FromUnit" Margin="0,6,0,0" SelectionChanged="Unit_Changed" AutomationProperties.Name="From unit"/>
+            </StackPanel>
+        </Border>
+
+        <Button DockPanel.Dock="Top" Style="{StaticResource IconButton}" Width="40" Height="36" HorizontalAlignment="Center"
+                Margin="0,2" Click="Swap_Click" ToolTip="Swap" AutomationProperties.Name="Swap units">
+            <TextBlock Style="{StaticResource Icon}" Text="&#xE8CB;"/>
+        </Button>
+
+        <Border DockPanel.Dock="Top" Style="{StaticResource Card}" Margin="0">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,4">
+                    <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Width="28" Height="28" Click="CopyResult_Click"
+                            ToolTip="Copy" AutomationProperties.Name="Copy result">
+                        <TextBlock Style="{StaticResource Icon}" Text="&#xE8C8;" FontSize="13"/>
+                    </Button>
+                    <TextBlock Text="To" Style="{StaticResource Hint}" VerticalAlignment="Center"/>
+                </DockPanel>
+                <TextBlock x:Name="ToValue" Style="{StaticResource BigResult}" FontSize="26" Text="0" AutomationProperties.Name="Converted amount"/>
+                <ComboBox x:Name="ToUnit" Margin="0,6,0,0" SelectionChanged="Unit_Changed" AutomationProperties.Name="To unit"/>
+                <TextBlock x:Name="RateLine" Style="{StaticResource Hint}" Margin="0,6,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <DockPanel x:Name="CurrencyBar" DockPanel.Dock="Top" Margin="2,8,0,0" Visibility="Collapsed">
+            <Button x:Name="RefreshButton" DockPanel.Dock="Right" Content="Update rates" Padding="10,4" MinHeight="28" MinWidth="0" Click="Refresh_Click"/>
+            <TextBlock x:Name="RatesStatus" Style="{StaticResource Hint}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+        </DockPanel>
+
+        <TextBlock DockPanel.Dock="Top" Text="All conversions" Style="{StaticResource SectionHeader}" Margin="2,14,0,6"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="AllList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="{DynamicResource Divider}" BorderThickness="0,0,0,1" Padding="2,5">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right" Text="{Binding Value}" Style="{StaticResource ResultRowValue}" Margin="12,0,0,0"/>
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource ResultRowLabel}" Margin="0" TextTrimming="CharacterEllipsis"/>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

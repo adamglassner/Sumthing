@@ -1,0 +1,175 @@
+<UserControl x:Class="Sumthing.Views.StandardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="clr-namespace:Sumthing.Views">
+    <Grid>
+        <!-- ================= Modern (Light / Dark) ================= -->
+        <Grid x:Name="ModernLayout">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MinHeight="96"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel VerticalAlignment="Bottom" Margin="14,0,14,6">
+                <TextBlock x:Name="ExprText" HorizontalAlignment="Right" FontSize="14" Foreground="{DynamicResource DisplaySubText}"
+                           TextTrimming="CharacterEllipsis" MinHeight="19"/>
+                <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Right" Height="62" Margin="0,2,0,0">
+                    <TextBlock x:Name="MainText" Text="0" FontSize="48" FontWeight="SemiBold" FontFamily="{DynamicResource DisplayFont}"
+                               Foreground="{DynamicResource DisplayText}" AutomationProperties.Name="Display"
+                               AutomationProperties.AutomationId="Display"/>
+                </Viewbox>
+            </StackPanel>
+
+            <UniformGrid Grid.Row="1" Columns="5" Margin="3,0,3,2" Height="{DynamicResource KeyMemHeight}">
+                <v:CalcKey x:Name="ModernMC" Style="{StaticResource KeyMem}" Tag="MC" Content="MC" Click="Key_Click" ToolTip="Clear memory (Ctrl+L)"/>
+                <v:CalcKey x:Name="ModernMR" Style="{StaticResource KeyMem}" Tag="MR" Content="MR" Click="Key_Click" ToolTip="Memory recall (Ctrl+R)"/>
+                <v:CalcKey Style="{StaticResource KeyMem}" Tag="M+" Content="M+" Click="Key_Click" ToolTip="Add to memory (Ctrl+P)"/>
+                <v:CalcKey Style="{StaticResource KeyMem}" Tag="M−" Content="M−" Click="Key_Click" ToolTip="Subtract from memory (Ctrl+Q)"/>
+                <v:CalcKey Style="{StaticResource KeyMem}" Tag="MS" Content="MS" Click="Key_Click" ToolTip="Memory store (Ctrl+M)"/>
+            </UniformGrid>
+
+            <UniformGrid x:Name="ModernPad" Grid.Row="2" Columns="4" Rows="6" Margin="3,0,3,3">
+                <v:CalcKey Style="{StaticResource KeyFn}" Tag="%" Content="%" Click="Key_Click" ToolTip="Percent"/>
+                <v:CalcKey Style="{StaticResource KeyFn}" Tag="CE" Content="CE" Click="Key_Click" ToolTip="Clear entry (Delete)"/>
+                <v:CalcKey Style="{StaticResource KeyFn}" Tag="C" Content="C" Click="Key_Click" ToolTip="Clear (Esc)"/>
+                <v:CalcKey Style="{StaticResource KeyFn}" Tag="back" Click="Key_Click" ToolTip="Backspace" AutomationProperties.Name="Backspace">
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xE750;" FontSize="15"/>
+                </v:CalcKey>
+                <v:CalcKey Style="{StaticResource KeyFn}" Tag="inv" Content="1/x" Click="Key_Click" ToolTip="Reciprocal (R)"/>
+                <v:CalcKey Style="{StaticResource KeyFn}" Tag="sqr" Content="x²" Click="Key_Click" ToolTip="Square (Q)"/>
+                <v:CalcKey Style="{StaticResource KeyFn}" Tag="√" Content="√x" Click="Key_Click" ToolTip="Square root (@)"/>
+                <v:CalcKey Style="{StaticResource KeyOp}" Tag="÷" Content="÷" Click="Key_Click" ToolTip="Divide (/)"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="7" Content="7" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="8" Content="8" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="9" Content="9" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyOp}" Tag="×" Content="×" Click="Key_Click" ToolTip="Multiply (*)"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="4" Content="4" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="5" Content="5" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="6" Content="6" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyOp}" Tag="−" Content="−" Click="Key_Click" ToolTip="Subtract (-)"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="1" Content="1" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="2" Content="2" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="3" Content="3" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyOp}" Tag="+" Content="+" Click="Key_Click" ToolTip="Add (+)"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="neg" Content="+/−" Click="Key_Click" ToolTip="Positive / negative (F9)"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="0" Content="0" Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyNum}" Tag="." Content="." Click="Key_Click"/>
+                <v:CalcKey Style="{StaticResource KeyEq}" Tag="=" Content="=" Click="Key_Click" ToolTip="Equals (Enter)"/>
+            </UniformGrid>
+        </Grid>
+
+        <!-- ================= Classic (Windows 7 / 8 calculator) ================= -->
+        <Grid x:Name="ClassicLayout" Visibility="Collapsed" Margin="10,8,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Background="{DynamicResource DisplayBg}" BorderBrush="{DynamicResource DisplayBorder}" BorderThickness="1"
+                    CornerRadius="2" Height="58" Margin="0,0,0,8" SnapsToDevicePixels="True">
+                <Grid Margin="6,3,7,3">
+                    <TextBlock x:Name="ClassicExpr" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="11.5"
+                               FontFamily="{DynamicResource DisplayFont}" Foreground="{DynamicResource DisplaySubText}"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock x:Name="ClassicMem" Text="M" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="12"
+                               Foreground="{DynamicResource DisplaySubText}" Margin="0,0,0,3" Visibility="Hidden"/>
+                    <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="30" Margin="16,0,0,0">
+                        <TextBlock x:Name="ClassicMain" Text="0" FontSize="26" FontFamily="{DynamicResource DisplayFont}"
+                                   Foreground="{DynamicResource DisplayText}" AutomationProperties.Name="Display"/>
+                    </Viewbox>
+                </Grid>
+            </Border>
+
+            <Grid x:Name="ClassicPad" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/>
+                </Grid.RowDefinitions>
+                <v:CalcKey x:Name="ClassicMC" Grid.Row="0" Grid.Column="0" Style="{StaticResource KeyClassic}" Tag="MC" Content="MC" Click="Key_Click"/>
+                <v:CalcKey x:Name="ClassicMR" Grid.Row="0" Grid.Column="1" Style="{StaticResource KeyClassic}" Tag="MR" Content="MR" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="0" Grid.Column="2" Style="{StaticResource KeyClassic}" Tag="MS" Content="MS" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="0" Grid.Column="3" Style="{StaticResource KeyClassic}" Tag="M+" Content="M+" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="0" Grid.Column="4" Style="{StaticResource KeyClassic}" Tag="M−" Content="M-" Click="Key_Click"/>
+
+                <v:CalcKey Grid.Row="1" Grid.Column="0" Style="{StaticResource KeyClassic}" Tag="back" Content="←" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="1" Grid.Column="1" Style="{StaticResource KeyClassic}" Tag="CE" Content="CE" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="1" Grid.Column="2" Style="{StaticResource KeyClassic}" Tag="C" Content="C" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="1" Grid.Column="3" Style="{StaticResource KeyClassic}" Tag="neg" Content="±" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="1" Grid.Column="4" Style="{StaticResource KeyClassic}" Tag="√" Content="√" Click="Key_Click"/>
+
+                <v:CalcKey Grid.Row="2" Grid.Column="0" Style="{StaticResource KeyClassic}" Tag="7" Content="7" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="2" Grid.Column="1" Style="{StaticResource KeyClassic}" Tag="8" Content="8" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="2" Grid.Column="2" Style="{StaticResource KeyClassic}" Tag="9" Content="9" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="2" Grid.Column="3" Style="{StaticResource KeyClassic}" Tag="÷" Content="/" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="2" Grid.Column="4" Style="{StaticResource KeyClassic}" Tag="%" Content="%" Click="Key_Click"/>
+
+                <v:CalcKey Grid.Row="3" Grid.Column="0" Style="{StaticResource KeyClassic}" Tag="4" Content="4" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="3" Grid.Column="1" Style="{StaticResource KeyClassic}" Tag="5" Content="5" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="3" Grid.Column="2" Style="{StaticResource KeyClassic}" Tag="6" Content="6" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="3" Grid.Column="3" Style="{StaticResource KeyClassic}" Tag="×" Content="*" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="3" Grid.Column="4" Style="{StaticResource KeyClassic}" Tag="inv" Content="1/x" Click="Key_Click" FontStyle="Italic"/>
+
+                <v:CalcKey Grid.Row="4" Grid.Column="0" Style="{StaticResource KeyClassic}" Tag="1" Content="1" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="4" Grid.Column="1" Style="{StaticResource KeyClassic}" Tag="2" Content="2" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="4" Grid.Column="2" Style="{StaticResource KeyClassic}" Tag="3" Content="3" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="4" Grid.Column="3" Style="{StaticResource KeyClassic}" Tag="−" Content="-" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="4" Grid.Column="4" Grid.RowSpan="2" Style="{StaticResource KeyClassic}" Tag="=" Content="=" Click="Key_Click" FontSize="20"/>
+
+                <v:CalcKey Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource KeyClassic}" Tag="0" Content="0" Click="Key_Click"/>
+                <v:CalcKey Grid.Row="5" Grid.Column="2" Style="{StaticResource KeyClassic}" Tag="." Content="." Click="Key_Click"/>
+                <v:CalcKey Grid.Row="5" Grid.Column="3" Style="{StaticResource KeyClassic}" Tag="+" Content="+" Click="Key_Click"/>
+            </Grid>
+        </Grid>
+
+        <!-- ================= History (slides up over the keypad) ================= -->
+        <Grid x:Name="HistoryLayer" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="2.6*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.RowSpan="2" Background="#22000000" MouseLeftButtonDown="HistoryDismiss_MouseDown"/>
+            <Border Grid.Row="1" Background="{DynamicResource PanelBg}" BorderBrush="{DynamicResource ControlBorder}"
+                    BorderThickness="0,1,0,0" CornerRadius="{DynamicResource KeyRadius}">
+                <DockPanel Margin="6">
+                    <DockPanel DockPanel.Dock="Top" Margin="8,2,0,4">
+                        <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Width="32" Height="32" Click="HistoryClose_Click"
+                                ToolTip="Close history" AutomationProperties.Name="Close history">
+                            <TextBlock Style="{StaticResource Icon}" Text="&#xE711;" FontSize="12"/>
+                        </Button>
+                        <Button x:Name="ClearHistoryButton" DockPanel.Dock="Right" Style="{StaticResource IconButton}" Width="32" Height="32"
+                                Click="ClearHistory_Click" ToolTip="Clear history" AutomationProperties.Name="Clear history">
+                            <TextBlock Style="{StaticResource Icon}" Text="&#xE74D;" FontSize="14"/>
+                        </Button>
+                        <TextBlock Text="History" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </DockPanel>
+                    <TextBlock x:Name="MemoryLine" DockPanel.Dock="Top" Margin="10,0,0,6" Foreground="{DynamicResource TextSecondary}"
+                               FontSize="12.5" Visibility="Collapsed"/>
+                    <Grid>
+                        <TextBlock x:Name="HistoryEmpty" Text="There's no history yet." Margin="10,8" Foreground="{DynamicResource TextSecondary}"/>
+                        <ListBox x:Name="HistoryList" Background="Transparent" BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="HistoryList_SelectionChanged">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="ToolTip" Value="Use this result"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel HorizontalAlignment="Right" Margin="4,4">
+                                        <TextBlock Text="{Binding Expression}" HorizontalAlignment="Right" FontSize="12.5"
+                                                   Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Result}" HorizontalAlignment="Right" FontSize="20" FontWeight="SemiBold"
+                                                   FontFamily="{DynamicResource DisplayFont}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

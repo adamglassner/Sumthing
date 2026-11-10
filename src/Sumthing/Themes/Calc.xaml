@@ -1,0 +1,221 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="clr-namespace:Sumthing.Views">
+
+    <!-- Colours, radius and font sizes of the keys come from ThemeManager (KeyNumBg, KeyRadius, ...). -->
+
+    <ControlTemplate x:Key="KeyTemplate" TargetType="v:CalcKey">
+        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}"
+                SnapsToDevicePixels="True">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="False"
+                              Margin="{TemplateBinding Padding}"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="bd" Property="Background" Value="{Binding HoverBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="bd" Property="Background" Value="{Binding PressedBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource FocusRing}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.4"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="KeyBase" TargetType="v:CalcKey">
+        <Setter Property="Template" Value="{StaticResource KeyTemplate}"/>
+        <Setter Property="Foreground" Value="{DynamicResource KeyText}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource KeyBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource KeyRadius}"/>
+        <Setter Property="Margin" Value="{DynamicResource KeyGap}"/>
+        <Setter Property="FontSize" Value="{DynamicResource KeyFontSize}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="MinWidth" Value="0"/>
+        <Setter Property="MinHeight" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <Style x:Key="KeyNum" TargetType="v:CalcKey" BasedOn="{StaticResource KeyBase}">
+        <Setter Property="Background" Value="{DynamicResource KeyNumBg}"/>
+        <Setter Property="HoverBackground" Value="{DynamicResource KeyNumHover}"/>
+        <Setter Property="PressedBackground" Value="{DynamicResource KeyNumPressed}"/>
+        <Setter Property="FontSize" Value="{DynamicResource KeyNumFontSize}"/>
+        <Setter Property="FontWeight" Value="{DynamicResource KeyNumWeight}"/>
+    </Style>
+
+    <Style x:Key="KeyFn" TargetType="v:CalcKey" BasedOn="{StaticResource KeyBase}">
+        <Setter Property="Background" Value="{DynamicResource KeyFnBg}"/>
+        <Setter Property="HoverBackground" Value="{DynamicResource KeyFnHover}"/>
+        <Setter Property="PressedBackground" Value="{DynamicResource KeyFnPressed}"/>
+    </Style>
+
+    <Style x:Key="KeyOp" TargetType="v:CalcKey" BasedOn="{StaticResource KeyBase}">
+        <Setter Property="Background" Value="{DynamicResource KeyOpBg}"/>
+        <Setter Property="HoverBackground" Value="{DynamicResource KeyOpHover}"/>
+        <Setter Property="PressedBackground" Value="{DynamicResource KeyOpPressed}"/>
+        <Setter Property="FontSize" Value="{DynamicResource KeyNumFontSize}"/>
+    </Style>
+
+    <Style x:Key="KeyEq" TargetType="v:CalcKey" BasedOn="{StaticResource KeyBase}">
+        <Setter Property="Background" Value="{DynamicResource KeyEqBg}"/>
+        <Setter Property="HoverBackground" Value="{DynamicResource KeyEqHover}"/>
+        <Setter Property="PressedBackground" Value="{DynamicResource KeyEqPressed}"/>
+        <Setter Property="Foreground" Value="{DynamicResource KeyEqText}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource KeyEqBg}"/>
+        <Setter Property="FontSize" Value="{DynamicResource KeyNumFontSize}"/>
+    </Style>
+
+    <Style x:Key="KeyMem" TargetType="v:CalcKey" BasedOn="{StaticResource KeyBase}">
+        <Setter Property="Background" Value="{DynamicResource KeyMemBg}"/>
+        <Setter Property="HoverBackground" Value="{DynamicResource KeyMemHover}"/>
+        <Setter Property="PressedBackground" Value="{DynamicResource KeyMemPressed}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource KeyMemBorder}"/>
+        <Setter Property="FontSize" Value="12.5"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- The classic keypad uses plain-weight labels, like the Windows 7 calculator -->
+    <Style x:Key="KeyClassic" TargetType="v:CalcKey" BasedOn="{StaticResource KeyNum}">
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <!-- ========== Navigation pane (modern looks) ========== -->
+    <Style x:Key="NavItem" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Margin" Value="4,1"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource FocusRingVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border x:Name="bd" Background="Transparent" CornerRadius="5">
+                        <Grid>
+                            <Border x:Name="pip" Width="3" Height="16" CornerRadius="1.5" Background="{DynamicResource Accent}"
+                                    HorizontalAlignment="Left" Visibility="Collapsed"/>
+                            <ContentPresenter Margin="14,0,8,0" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource ControlHoverBg}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource ControlHoverBg}"/>
+                            <Setter TargetName="pip" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Segmented choice (tool tabs, tip presets) -->
+    <Style x:Key="Segment" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+        <Setter Property="Background" Value="{DynamicResource ButtonBg}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlBorder}"/>
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="Margin" Value="0,0,6,6"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FocusVisualStyle" Value="{DynamicResource FocusRingVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1" CornerRadius="{DynamicResource KeyRadius}" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource ButtonHoverBg}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource Accent}"/>
+                            <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource Accent}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource AccentText}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Big result read-outs in the tools -->
+    <Style x:Key="BigResult" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{DynamicResource DisplayFont}"/>
+        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+
+    <Style x:Key="ResultRowLabel" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,4"/>
+    </Style>
+
+    <Style x:Key="ResultRowValue" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="12,4,0,4"/>
+        <Setter Property="FontFamily" Value="{DynamicResource DisplayFont}"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <!-- Plain text box with no rounded box, for the Type-a-sum sheet -->
+    <Style x:Key="SheetBox" TargetType="TextBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource Text}"/>
+        <Setter Property="SelectionBrush" Value="{DynamicResource Accent}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" Background="{TemplateBinding Background}"
+                                  Padding="{TemplateBinding Padding}" Focusable="False"
+                                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ========== Date picker (Everyday tools) ========== -->
+    <Style TargetType="DatePickerTextBox">
+        <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource Text}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DatePickerTextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" Margin="6,3" VerticalAlignment="Center" Focusable="False"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="DatePicker">
+        <Setter Property="Background" Value="{DynamicResource InputBg}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}"/>
+        <Setter Property="MinHeight" Value="34"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,86 @@
+<UserControl x:Class="Sumthing.Views.SumsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel Margin="12,6,12,10">
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <ToggleButton x:Name="HelpToggle" Style="{StaticResource IconToggle}" Width="32" Height="32" Click="Help_Click"
+                              ToolTip="What can I type?" AutomationProperties.Name="What can I type">
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xE897;" FontSize="14"/>
+                </ToggleButton>
+                <Button Style="{StaticResource IconButton}" Width="32" Height="32" Click="CopyAll_Click"
+                        ToolTip="Copy the sheet with its answers" AutomationProperties.Name="Copy sheet">
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xE8C8;" FontSize="14"/>
+                </Button>
+                <Button Style="{StaticResource IconButton}" Width="32" Height="32" Click="Clear_Click"
+                        ToolTip="Clear the sheet" AutomationProperties.Name="Clear sheet">
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xE74D;" FontSize="14"/>
+                </Button>
+            </StackPanel>
+            <TextBlock Text="Type a sum on each line. Answers appear on the right; click one to copy it."
+                       Style="{StaticResource Hint}" VerticalAlignment="Center"/>
+        </DockPanel>
+
+        <Border x:Name="HelpPanel" DockPanel.Dock="Top" Style="{StaticResource Card}" Visibility="Collapsed" Padding="12,8">
+            <TextBlock TextWrapping="Wrap" FontSize="12.5" LineHeight="19">
+                <Run FontWeight="SemiBold">Sums</Run><Run Text="  12 + 30 × 2   (4 + 6) / 3   2^10   1,250.50   5k"/><LineBreak/>
+                <Run FontWeight="SemiBold">Percent</Run><Run Text="  15% of 80   80 + 15%   80 − 20%   20% off 80   8% on 50"/><LineBreak/>
+                <Run FontWeight="SemiBold">Names</Run><Run Text="  rent = 1,250  then  rent × 12"/><LineBreak/>
+                <Run FontWeight="SemiBold">Running totals</Run><Run Text="  total (since the last blank line or # heading), ans (the line above)"/><LineBreak/>
+                <Run FontWeight="SemiBold">Functions</Run><Run Text="  sqrt 81   round 2.5   abs   floor   ceil   sin cos tan (degrees)   log   ln   pi"/><LineBreak/>
+                <Run FontWeight="SemiBold">Notes</Run><Run Text="  Groceries: 45 + 12   # Heading   // comment   words like &quot;apples&quot; are ignored"/>
+            </TextBlock>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Margin="0,8,0,0" Padding="12,8" Background="{DynamicResource CardBg}"
+                BorderBrush="{DynamicResource Divider}" BorderThickness="1" CornerRadius="{DynamicResource KeyRadius}">
+            <DockPanel>
+                <Button x:Name="SendButton" DockPanel.Dock="Right" Content="Use in calculator" Padding="10,4" MinHeight="28" MinWidth="0"
+                        Click="Send_Click" ToolTip="Put the last answer on the Standard calculator"/>
+                <TextBlock Text="Last answer" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
+                <TextBlock x:Name="LastAnswer" Text="—" FontWeight="SemiBold" FontSize="18" Margin="10,0"
+                           FontFamily="{DynamicResource DisplayFont}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+            </DockPanel>
+        </Border>
+
+        <Border Background="{DynamicResource InputBg}" BorderBrush="{DynamicResource InputBorder}" BorderThickness="1"
+                CornerRadius="{DynamicResource KeyRadius}">
+            <ScrollViewer x:Name="Scroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto" MinWidth="80"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="Sheet" Style="{StaticResource SheetBox}" AcceptsReturn="True" AcceptsTab="False" TextWrapping="NoWrap"
+                             FontFamily="Cascadia Mono, Consolas" FontSize="14.5" Padding="10,0,6,0"
+                             TextBlock.LineHeight="24" TextBlock.LineStackingStrategy="BlockLineHeight"
+                             MinHeight="240" VerticalAlignment="Stretch" TextChanged="Sheet_TextChanged"
+                             AutomationProperties.Name="Sums"/>
+                    <ItemsControl x:Name="Answers" Grid.Column="1" Margin="0,0,10,0" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Height="24" HorizontalAlignment="Right" Click="Answer_Click" Tag="{Binding}" Focusable="False"
+                                        ToolTip="{Binding Tip}" Cursor="{Binding Cursor}">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" Background="Transparent" CornerRadius="4" Padding="6,0">
+                                                <ContentPresenter VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="{DynamicResource ControlHoverBg}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <TextBlock Text="{Binding Text}" Foreground="{Binding Brush}" FontFamily="Cascadia Mono, Consolas"
+                                               FontSize="14.5" FontWeight="{Binding Weight}"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+    </DockPanel>
+</UserControl>

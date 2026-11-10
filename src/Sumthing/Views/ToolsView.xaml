@@ -1,0 +1,167 @@
+<UserControl x:Class="Sumthing.Views.ToolsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style x:Key="Field" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0,2,0,10"/>
+        </Style>
+        <Style x:Key="Label" TargetType="TextBlock" BasedOn="{StaticResource Hint}">
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+    </UserControl.Resources>
+    <DockPanel Margin="12,6,12,10">
+        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+            <RadioButton x:Name="TabTip" Style="{StaticResource Segment}" GroupName="tool" Content="Tip &amp; split" Tag="0" Click="Tab_Click"/>
+            <RadioButton x:Name="TabPercent" Style="{StaticResource Segment}" GroupName="tool" Content="Percent change" Tag="1" Click="Tab_Click"/>
+            <RadioButton x:Name="TabDiscount" Style="{StaticResource Segment}" GroupName="tool" Content="Discount &amp; tax" Tag="2" Click="Tab_Click"/>
+            <RadioButton x:Name="TabDates" Style="{StaticResource Segment}" GroupName="tool" Content="Date difference" Tag="3" Click="Tab_Click"/>
+        </WrapPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <!-- ============ Tip & split ============ -->
+                <StackPanel x:Name="TipPanel">
+                    <TextBlock Text="Bill" Style="{StaticResource Label}"/>
+                    <TextBox x:Name="TipBill" Style="{StaticResource Field}" Text="64.80" TextChanged="Input_Changed" AutomationProperties.Name="Bill"/>
+                    <TextBlock Text="Tip" Style="{StaticResource Label}"/>
+                    <WrapPanel Margin="0,2,0,4">
+                        <RadioButton Style="{StaticResource Segment}" GroupName="tipPct" Content="10%" Tag="10" Click="TipPreset_Click"/>
+                        <RadioButton Style="{StaticResource Segment}" GroupName="tipPct" Content="15%" Tag="15" Click="TipPreset_Click"/>
+                        <RadioButton x:Name="Tip18" Style="{StaticResource Segment}" GroupName="tipPct" Content="18%" Tag="18" Click="TipPreset_Click"/>
+                        <RadioButton x:Name="Tip20" Style="{StaticResource Segment}" GroupName="tipPct" Content="20%" Tag="20" Click="TipPreset_Click" IsChecked="True"/>
+                        <RadioButton Style="{StaticResource Segment}" GroupName="tipPct" Content="25%" Tag="25" Click="TipPreset_Click"/>
+                    </WrapPanel>
+                    <DockPanel Margin="0,0,0,10">
+                        <TextBlock DockPanel.Dock="Right" Text="%" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                        <TextBox x:Name="TipPercent" Text="20" FontSize="16" TextChanged="TipPercent_Changed" AutomationProperties.Name="Tip percent"/>
+                    </DockPanel>
+                    <TextBlock Text="People" Style="{StaticResource Label}"/>
+                    <DockPanel Margin="0,2,0,8">
+                        <Button DockPanel.Dock="Left" Style="{StaticResource IconButton}" Width="36" Height="34" Click="PeopleMinus_Click" AutomationProperties.Name="Fewer people">
+                            <TextBlock Style="{StaticResource Icon}" Text="&#xE738;" FontSize="13"/>
+                        </Button>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Width="36" Height="34" Click="PeoplePlus_Click" AutomationProperties.Name="More people">
+                            <TextBlock Style="{StaticResource Icon}" Text="&#xE710;" FontSize="13"/>
+                        </Button>
+                        <TextBox x:Name="TipPeople" Text="2" FontSize="16" Margin="6,0" HorizontalContentAlignment="Center"
+                                 TextChanged="Input_Changed" AutomationProperties.Name="People"/>
+                    </DockPanel>
+                    <CheckBox x:Name="TipRound" Content="Round each share up to the next whole dollar" Margin="0,0,0,12" Click="Input_Changed"/>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Each person pays" Style="{StaticResource Hint}"/>
+                            <TextBlock x:Name="TipEach" Style="{StaticResource BigResult}" Text="—" AutomationProperties.Name="Each person pays"/>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                <TextBlock Text="Tip" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="TipAmount" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                                <TextBlock Grid.Row="1" Text="Total with tip" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="TipTotal" Grid.Row="1" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                                <TextBlock x:Name="TipRoundNote" Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource Hint}" Margin="0,4,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ============ Percent change ============ -->
+                <StackPanel x:Name="PercentPanel" Visibility="Collapsed">
+                    <TextBlock Text="Was" Style="{StaticResource Label}"/>
+                    <TextBox x:Name="PctFrom" Style="{StaticResource Field}" Text="80" TextChanged="Input_Changed" AutomationProperties.Name="Was"/>
+                    <TextBlock Text="Now" Style="{StaticResource Label}"/>
+                    <TextBox x:Name="PctTo" Style="{StaticResource Field}" Text="100" TextChanged="Input_Changed" AutomationProperties.Name="Now"/>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock x:Name="PctDirection" Text="Change" Style="{StaticResource Hint}"/>
+                            <TextBlock x:Name="PctChange" Style="{StaticResource BigResult}" Text="—" AutomationProperties.Name="Percent change"/>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                <TextBlock Text="Difference" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="PctDiff" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                                <TextBlock Grid.Row="1" Text="Now as a percent of was" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="PctRatio" Grid.Row="1" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="What percent is" Style="{StaticResource SectionHeader}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <TextBox x:Name="PartValue" Text="45" FontSize="16" TextChanged="Input_Changed" AutomationProperties.Name="Part"/>
+                        <TextBlock Grid.Column="1" Text="of" Margin="10,0" VerticalAlignment="Center"/>
+                        <TextBox x:Name="WholeValue" Grid.Column="2" Text="60" FontSize="16" TextChanged="Input_Changed" AutomationProperties.Name="Whole"/>
+                    </Grid>
+                    <TextBlock x:Name="PartResult" Style="{StaticResource BigResult}" FontSize="24" Margin="0,8,0,0" Text="—"/>
+                </StackPanel>
+
+                <!-- ============ Discount & tax ============ -->
+                <StackPanel x:Name="DiscountPanel" Visibility="Collapsed">
+                    <TextBlock Text="Price" Style="{StaticResource Label}"/>
+                    <TextBox x:Name="DiscPrice" Style="{StaticResource Field}" Text="129.99" TextChanged="Input_Changed" AutomationProperties.Name="Price"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Discount %" Style="{StaticResource Label}"/>
+                            <TextBox x:Name="DiscPercent" Style="{StaticResource Field}" Text="25" TextChanged="Input_Changed" AutomationProperties.Name="Discount percent"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Sales tax %" Style="{StaticResource Label}"/>
+                            <TextBox x:Name="DiscTax" Style="{StaticResource Field}" Text="6" TextChanged="Input_Changed" AutomationProperties.Name="Sales tax percent"/>
+                        </StackPanel>
+                    </Grid>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="You pay" Style="{StaticResource Hint}"/>
+                            <TextBlock x:Name="DiscTotal" Style="{StaticResource BigResult}" Text="—" AutomationProperties.Name="You pay"/>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                <TextBlock Text="You save" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="DiscSave" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                                <TextBlock Grid.Row="1" Text="Price after discount" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="DiscAfter" Grid.Row="1" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                                <TextBlock Grid.Row="2" Text="Tax" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="DiscTaxAmt" Grid.Row="2" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ============ Date difference ============ -->
+                <StackPanel x:Name="DatesPanel" Visibility="Collapsed">
+                    <TextBlock Text="From" Style="{StaticResource Label}"/>
+                    <DatePicker x:Name="DateFrom" Margin="0,2,0,10" SelectedDateChanged="Date_Changed" AutomationProperties.Name="From date"/>
+                    <TextBlock Text="To" Style="{StaticResource Label}"/>
+                    <DatePicker x:Name="DateTo" Margin="0,2,0,6" SelectedDateChanged="Date_Changed" AutomationProperties.Name="To date"/>
+                    <CheckBox x:Name="DateInclusive" Content="Count the last day too" Margin="0,4,0,12" Click="Input_Changed"/>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Difference" Style="{StaticResource Hint}"/>
+                            <TextBlock x:Name="DateSpan" Style="{StaticResource BigResult}" FontSize="22" TextWrapping="Wrap" TextTrimming="None" Text="—"
+                                       AutomationProperties.Name="Date difference"/>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                <TextBlock Text="Total days" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="DateDays" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                                <TextBlock Grid.Row="1" Text="Weeks" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="DateWeeks" Grid.Row="1" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                                <TextBlock Grid.Row="2" Text="Weekdays (Mon–Fri)" Style="{StaticResource ResultRowLabel}"/>
+                                <TextBlock x:Name="DateWorkdays" Grid.Row="2" Grid.Column="1" Style="{StaticResource ResultRowValue}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="Add or take away days" Style="{StaticResource SectionHeader}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBox x:Name="AddDays" Text="90" FontSize="16" TextChanged="Input_Changed" AutomationProperties.Name="Days to add"
+                                 ToolTip="Use a minus sign to go back in time, e.g. -30"/>
+                        <TextBlock Grid.Column="1" Text="days after From" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock x:Name="AddResult" Style="{StaticResource BigResult}" FontSize="20" Margin="0,8,0,0" Text="—"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>
