@@ -32,8 +32,6 @@ public partial class MainWindow : Window
         Engine.Tape += e => TapePage.Add(e);
         StandardPage.Attach(Engine);
         SumsPage.SendToCalculator += SendToCalculator;
-        ConverterPage.SendToCalculator += SendToCalculator;
-        ToolsPage.SendToCalculator += SendToCalculator;
 
         _wasClassic = ThemeManager.IsClassic;
         RestoreWindow();

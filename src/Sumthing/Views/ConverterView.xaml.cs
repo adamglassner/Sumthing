@@ -8,8 +8,6 @@ namespace Sumthing.Views;
 /// <summary>Unit and currency converter.</summary>
 public partial class ConverterView : UserControl
 {
-    public event Action<decimal, string> SendToCalculator;
-
     private UnitCategory _cat;
     private bool _busy;
 

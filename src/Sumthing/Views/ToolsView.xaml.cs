@@ -8,8 +8,6 @@ namespace Sumthing.Views;
 /// <summary>Everyday tools: tip &amp; split, percent change, discount &amp; tax, date difference.</summary>
 public partial class ToolsView : UserControl
 {
-    public event Action<decimal, string> SendToCalculator;
-
     private bool _ready;
 
     public ToolsView()

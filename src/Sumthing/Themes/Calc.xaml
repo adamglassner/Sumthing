@@ -18,6 +18,9 @@
             <Trigger Property="IsPressed" Value="True">
                 <Setter TargetName="bd" Property="Background" Value="{Binding PressedBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
             </Trigger>
+            <Trigger Property="IsFlashing" Value="True">
+                <Setter TargetName="bd" Property="Background" Value="{Binding PressedBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
+            </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="True">
                 <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource FocusRing}"/>
             </Trigger>

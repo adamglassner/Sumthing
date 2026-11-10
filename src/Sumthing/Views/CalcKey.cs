@@ -18,12 +18,18 @@ public class CalcKey : Button
     public Brush PressedBackground { get => (Brush)GetValue(PressedBackgroundProperty); set => SetValue(PressedBackgroundProperty, value); }
     public CornerRadius CornerRadius { get => (CornerRadius)GetValue(CornerRadiusProperty); set => SetValue(CornerRadiusProperty, value); }
 
+    public static readonly DependencyProperty IsFlashingProperty =
+        DependencyProperty.Register(nameof(IsFlashing), typeof(bool), typeof(CalcKey));
+
+    /// <summary>True for a moment after the key is used from the keyboard (drawn like a press).</summary>
+    public bool IsFlashing { get => (bool)GetValue(IsFlashingProperty); set => SetValue(IsFlashingProperty, value); }
+
     /// <summary>Flash the key as if clicked (keyboard input), so the user sees which key was used.</summary>
     public void Flash()
     {
-        SetIsPressed(true);
+        IsFlashing = true;
         var t = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(110) };
-        t.Tick += (_, _) => { t.Stop(); SetIsPressed(false); };
+        t.Tick += (_, _) => { t.Stop(); IsFlashing = false; };
         t.Start();
     }
 }
