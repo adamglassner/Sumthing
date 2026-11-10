@@ -23,7 +23,7 @@
             <Border Style="{StaticResource Card}">
                 <StackPanel>
                     <CheckBox x:Name="Separators" Content="Show thousands separators (1,234,567)" Click="Option_Click"/>
-                    <CheckBox x:Name="KeepSession" Content="Keep history, memory and the tape after closing Sumthing" Margin="0,8,0,0" Click="Option_Click"/>
+                    <CheckBox x:Name="KeepSession" Content="Remember history, memory and the tape" Margin="0,8,0,0" Click="Option_Click"/>
                     <CheckBox x:Name="OnTop" Content="Keep Sumthing on top of other windows" Margin="0,8,0,0" Click="Option_Click"/>
                 </StackPanel>
             </Border>

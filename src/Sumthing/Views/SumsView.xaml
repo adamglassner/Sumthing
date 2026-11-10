@@ -59,7 +59,7 @@
                     <ItemsControl x:Name="Answers" Grid.Column="1" Margin="0,0,10,0" Focusable="False">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Height="24" HorizontalAlignment="Right" Click="Answer_Click" Tag="{Binding}" Focusable="False"
+                                <Button Height="24" MinHeight="0" MinWidth="0" Padding="0" HorizontalAlignment="Right" Click="Answer_Click" Tag="{Binding}" Focusable="False"
                                         ToolTip="{Binding Tip}" Cursor="{Binding Cursor}">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
