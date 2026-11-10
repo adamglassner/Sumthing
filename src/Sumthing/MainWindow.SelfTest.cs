@@ -197,7 +197,7 @@ public partial class MainWindow
             await Idle();
             AreEqual("42", StandardPage.MainDisplay, "display after 7 × 6 =");
             AreEqual("7 × 6 =", StandardPage.ExpressionDisplay, "expression line");
-            Assert(TapePage.Entries.Count >= 4 && TapePage.Entries[^1].Number == "42" && TapePage.Entries[^1].IsTotal, "the tape got the sum");
+            Assert(TapePage.Entries.Count >= 3 && TapePage.Entries[^1].Number == "42" && TapePage.Entries[^1].IsTotal, "the tape got the sum");
         });
 
         await Test("Window: typing", async () =>

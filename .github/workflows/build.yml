@@ -81,6 +81,24 @@ jobs:
           if (Test-Path $err) { Get-Content $err | Write-Host; Write-Host '::error::error.log was written' ; exit 1 }
           if ($p.ExitCode -ne 0) { throw "Self-test failed (exit code $($p.ExitCode))" }
 
+      - name: Share screenshots on the ci-shots branch (work branches only)
+        if: always() && github.event_name == 'push' && github.ref != 'refs/heads/main'
+        shell: pwsh
+        run: |
+          if (-not (Test-Path screenshots)) { exit 0 }
+          $d = Join-Path $env:RUNNER_TEMP 'shots'
+          New-Item -ItemType Directory -Force $d | Out-Null
+          Copy-Item screenshots/* $d
+          $out = Join-Path $env:RUNNER_TEMP 'selftest.txt'
+          if (Test-Path $out) { Copy-Item $out $d }
+          Set-Location $d
+          git init -q
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Screenshots from ${{ github.sha }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/ci-shots
+
       - name: Installer test (silent install, run, uninstall)
         shell: pwsh
         run: |
