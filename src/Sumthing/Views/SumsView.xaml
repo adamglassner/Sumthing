@@ -56,7 +56,7 @@
                              TextBlock.LineHeight="24" TextBlock.LineStackingStrategy="BlockLineHeight"
                              MinHeight="240" VerticalAlignment="Stretch" TextChanged="Sheet_TextChanged"
                              AutomationProperties.Name="Sums"/>
-                    <ItemsControl x:Name="Answers" Grid.Column="1" Margin="0,0,10,0" Focusable="False">
+                    <ItemsControl x:Name="Answers" Grid.Column="1" Margin="0,2,10,0" Focusable="False">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button Height="24" MinHeight="0" MinWidth="0" Padding="0" HorizontalAlignment="Right" Click="Answer_Click" Tag="{Binding}" Focusable="False"
