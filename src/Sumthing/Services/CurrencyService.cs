@@ -10,6 +10,19 @@ namespace Sumthing.Services;
 /// </summary>
 public static class CurrencyService
 {
+    // Declared first: static fields initialise top to bottom and Names copies this.
+    private static readonly Dictionary<string, string> DefaultNames = new()
+    {
+        ["AUD"] = "Australian Dollar", ["BGN"] = "Bulgarian Lev", ["BRL"] = "Brazilian Real", ["CAD"] = "Canadian Dollar",
+        ["CHF"] = "Swiss Franc", ["CNY"] = "Chinese Renminbi Yuan", ["CZK"] = "Czech Koruna", ["DKK"] = "Danish Krone",
+        ["EUR"] = "Euro", ["GBP"] = "British Pound", ["HKD"] = "Hong Kong Dollar", ["HUF"] = "Hungarian Forint",
+        ["IDR"] = "Indonesian Rupiah", ["ILS"] = "Israeli New Sheqel", ["INR"] = "Indian Rupee", ["ISK"] = "Icelandic Króna",
+        ["JPY"] = "Japanese Yen", ["KRW"] = "South Korean Won", ["MXN"] = "Mexican Peso", ["MYR"] = "Malaysian Ringgit",
+        ["NOK"] = "Norwegian Krone", ["NZD"] = "New Zealand Dollar", ["PHP"] = "Philippine Peso", ["PLN"] = "Polish Złoty",
+        ["RON"] = "Romanian Leu", ["SEK"] = "Swedish Krona", ["SGD"] = "Singapore Dollar", ["THB"] = "Thai Baht",
+        ["TRY"] = "Turkish Lira", ["USD"] = "United States Dollar", ["ZAR"] = "South African Rand",
+    };
+
     /// <summary>Units per 1 euro (EUR itself is 1).</summary>
     public static Dictionary<string, decimal> Rates { get; private set; } = new();
     public static Dictionary<string, string> Names { get; private set; } = new(DefaultNames);
@@ -155,16 +168,4 @@ public static class CurrencyService
         list.AddRange(all.Where(c => !popular.Contains(c)).OrderBy(c => c));
         return list;
     }
-
-    private static readonly Dictionary<string, string> DefaultNames = new()
-    {
-        ["AUD"] = "Australian Dollar", ["BGN"] = "Bulgarian Lev", ["BRL"] = "Brazilian Real", ["CAD"] = "Canadian Dollar",
-        ["CHF"] = "Swiss Franc", ["CNY"] = "Chinese Renminbi Yuan", ["CZK"] = "Czech Koruna", ["DKK"] = "Danish Krone",
-        ["EUR"] = "Euro", ["GBP"] = "British Pound", ["HKD"] = "Hong Kong Dollar", ["HUF"] = "Hungarian Forint",
-        ["IDR"] = "Indonesian Rupiah", ["ILS"] = "Israeli New Sheqel", ["INR"] = "Indian Rupee", ["ISK"] = "Icelandic Króna",
-        ["JPY"] = "Japanese Yen", ["KRW"] = "South Korean Won", ["MXN"] = "Mexican Peso", ["MYR"] = "Malaysian Ringgit",
-        ["NOK"] = "Norwegian Krone", ["NZD"] = "New Zealand Dollar", ["PHP"] = "Philippine Peso", ["PLN"] = "Polish Złoty",
-        ["RON"] = "Romanian Leu", ["SEK"] = "Swedish Krona", ["SGD"] = "Singapore Dollar", ["THB"] = "Thai Baht",
-        ["TRY"] = "Turkish Lira", ["USD"] = "United States Dollar", ["ZAR"] = "South African Rand",
-    };
 }
