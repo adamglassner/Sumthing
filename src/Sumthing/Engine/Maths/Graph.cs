@@ -49,10 +49,16 @@ public sealed class CompiledRow
 /// <summary>The TI-84 window: Xmin, Xmax, Xscl, Ymin, Ymax, Yscl.</summary>
 public sealed class GraphWindow
 {
-    public double XMin { get; set; } = -10, XMax { get; set; } = 10, XScl { get; set; } = 1;
-    public double YMin { get; set; } = -10, YMax { get; set; } = 10, YScl { get; set; } = 1;
-    public double TMin { get; set; } = 0, TMax { get; set; } = 2 * System.Math.PI;
-    public double ThetaMin { get; set; } = 0, ThetaMax { get; set; } = 2 * System.Math.PI;
+    public double XMin { get; set; } = -10;
+    public double XMax { get; set; } = 10;
+    public double XScl { get; set; } = 1;
+    public double YMin { get; set; } = -10;
+    public double YMax { get; set; } = 10;
+    public double YScl { get; set; } = 1;
+    public double TMin { get; set; } = 0;
+    public double TMax { get; set; } = 2 * System.Math.PI;
+    public double ThetaMin { get; set; } = 0;
+    public double ThetaMax { get; set; } = 2 * System.Math.PI;
 
     public GraphWindow Copy() => (GraphWindow)MemberwiseClone();
 }
