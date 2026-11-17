@@ -25,12 +25,40 @@ public partial class StandardView : UserControl
     public string MainDisplay => ThemeManager.IsClassic ? ClassicMain.Text : MainText.Text;
     public string ExpressionDisplay => ThemeManager.IsClassic ? ClassicExpr.Text : ExprText.Text;
 
+    public TapePanel TapePanel => Tape;
+    public bool IsCompact { get; private set; }
+
     public void Attach(CalcEngine engine)
     {
         _engine = engine;
         _engine.Changed += Refresh;
         Refresh();
     }
+
+    /// <summary>Compact: just the calculator (mini window). Full: the calculator beside the tape and history.</summary>
+    public void SetCompact(bool compact)
+    {
+        IsCompact = compact;
+        SideCard.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+        CalcColumn.Width = compact ? new GridLength(1, GridUnitType.Star) : new GridLength(440);
+        GapColumn.Width = compact ? new GridLength(0) : new GridLength(16);
+        SideColumn.Width = compact ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+        CalcCard.Margin = new Thickness(0);
+        if (!compact) ShowHistory(false);
+    }
+
+    public void ShowSideTab(string tab)
+    {
+        bool history = tab == "History";
+        TabHistory.IsChecked = history;
+        TabTape.IsChecked = !history;
+        Tape.Visibility = history ? Visibility.Collapsed : Visibility.Visible;
+        SideHistory.Visibility = history ? Visibility.Visible : Visibility.Collapsed;
+        SettingsService.Current.RightPanel = history ? "History" : "Tape";
+        if (history) FillHistory();
+    }
+
+    private void SideTab_Click(object sender, RoutedEventArgs e) => ShowSideTab(TabHistory.IsChecked == true ? "History" : "Tape");
 
     public void ApplyLook()
     {
@@ -58,7 +86,8 @@ public partial class StandardView : UserControl
         MemoryLine.Text = hasMem ? "Memory: " + Num.Format(_engine.Memory.Value) : "";
         MemoryLine.Visibility = hasMem ? Visibility.Visible : Visibility.Collapsed;
 
-        if (HistoryLayer.Visibility == Visibility.Visible) FillHistory();
+        SideMemory.Text = hasMem ? "Memory: " + Num.Format(_engine.Memory.Value) : "";
+        FillHistory();
     }
 
     // ================================================================ keys
@@ -155,18 +184,29 @@ public partial class StandardView : UserControl
 
     private void FillHistory()
     {
-        HistoryList.ItemsSource = null;
-        HistoryList.ItemsSource = _engine.History.ToList();
-        bool empty = _engine.History.Count == 0;
-        HistoryEmpty.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
-        HistoryList.Visibility = empty ? Visibility.Collapsed : Visibility.Visible;
-        ClearHistoryButton.IsEnabled = !empty;
+        if (_engine == null) return;
+        var items = _engine.History.ToList();
+        bool empty = items.Count == 0;
+        if (HistoryLayer.Visibility == Visibility.Visible)
+        {
+            HistoryList.ItemsSource = items;
+            HistoryEmpty.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
+            HistoryList.Visibility = empty ? Visibility.Collapsed : Visibility.Visible;
+            ClearHistoryButton.IsEnabled = !empty;
+        }
+        if (SideHistory.Visibility == Visibility.Visible)
+        {
+            SideHistoryList.ItemsSource = items;
+            SideHistoryEmpty.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
+            SideClearHistory.IsEnabled = !empty;
+        }
     }
 
     private void HistoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (HistoryList.SelectedItem is HistoryItem h)
+        if ((sender as ListBox)?.SelectedItem is HistoryItem h)
         {
+            ((ListBox)sender).SelectedItem = null;
             ShowHistory(false);
             _engine.SetValue(h.Value, h.Expression);
         }

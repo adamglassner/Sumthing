@@ -1,34 +1,32 @@
 <UserControl x:Class="Sumthing.Views.TapePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Border x:Name="Frame" Background="{DynamicResource PanelBg}" BorderBrush="{DynamicResource Divider}" BorderThickness="1,0,0,0">
+    <Border x:Name="Frame" Background="Transparent">
         <DockPanel>
-            <DockPanel DockPanel.Dock="Top" Margin="12,8,6,6">
+            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                    <Button Style="{StaticResource IconButton}" Width="32" Height="32" Click="Copy_Click" ToolTip="Copy the tape" AutomationProperties.Name="Copy the tape">
+                    <Button Style="{StaticResource IconButton}" Width="34" Height="34" Margin="6,0,0,0" Click="Copy_Click" ToolTip="Copy the tape" AutomationProperties.Name="Copy the tape">
                         <TextBlock Style="{StaticResource Icon}" Text="&#xE8C8;" FontSize="14"/>
                     </Button>
-                    <Button Style="{StaticResource IconButton}" Width="32" Height="32" Click="Save_Click" ToolTip="Save the tape as a text file" AutomationProperties.Name="Save the tape">
+                    <Button Style="{StaticResource IconButton}" Width="34" Height="34" Margin="6,0,0,0" Click="Save_Click" ToolTip="Save the tape as a text file" AutomationProperties.Name="Save the tape">
                         <TextBlock Style="{StaticResource Icon}" Text="&#xE74E;" FontSize="14"/>
                     </Button>
-                    <Button Style="{StaticResource IconButton}" Width="32" Height="32" Click="Print_Click" ToolTip="Print the tape" AutomationProperties.Name="Print the tape">
+                    <Button Style="{StaticResource IconButton}" Width="34" Height="34" Margin="6,0,0,0" Click="Print_Click" ToolTip="Print the tape" AutomationProperties.Name="Print the tape">
                         <TextBlock Style="{StaticResource Icon}" Text="&#xE749;" FontSize="14"/>
                     </Button>
-                    <Button Style="{StaticResource IconButton}" Width="32" Height="32" Click="Clear_Click" ToolTip="Clear the tape" AutomationProperties.Name="Clear the tape">
+                    <Button Style="{StaticResource IconButton}" Width="34" Height="34" Margin="6,0,0,0" Click="Clear_Click" ToolTip="Clear the tape" AutomationProperties.Name="Clear the tape">
                         <TextBlock Style="{StaticResource Icon}" Text="&#xE74D;" FontSize="14"/>
                     </Button>
                 </StackPanel>
-                <TextBlock Text="Tape" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <TextBlock Style="{StaticResource Hint}" VerticalAlignment="Center" TextWrapping="Wrap" Text="Every step prints here, like an adding machine. Click beside a number to add a note."/>
             </DockPanel>
-            <TextBlock DockPanel.Dock="Bottom" Margin="12,4,12,8" FontSize="11.5" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap"
-                       Text="Click to the left of a number to add a note."/>
 
             <!-- the paper -->
-            <Border Margin="10,0,10,0" Background="{DynamicResource TapeBg}" BorderBrush="{DynamicResource TapeLine}" BorderThickness="1"
+            <Border Margin="0" Background="{DynamicResource TapeBg}" BorderBrush="{DynamicResource TapeLine}" BorderThickness="1"
                     CornerRadius="2">
                 <Grid>
                     <TextBlock x:Name="EmptyText" Text="Every step you work out on the Standard calculator prints here, like an adding machine."
-                               Margin="14" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}" FontSize="12.5"/>
+                               Margin="14" TextWrapping="Wrap" Foreground="{DynamicResource Brush.TextMuted}" FontSize="12.5"/>
                     <ListBox x:Name="TapeList" Background="Transparent" BorderThickness="0" Padding="0,4"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.ScrollUnit="Pixel">
                         <ListBox.ItemContainerStyle>
@@ -54,7 +52,7 @@
                                             <ColumnDefinition Width="30"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource SheetBox}"
-                                                 FontSize="12" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"
+                                                 FontSize="12" Foreground="{DynamicResource Brush.TextMuted}" VerticalAlignment="Center"
                                                  MinHeight="0" Padding="0" ToolTip="Add a note to this line" AutomationProperties.Name="Note"/>
                                         <TextBlock x:Name="num" Grid.Column="1" Text="{Binding Number}" FontFamily="Consolas, Cascadia Mono"
                                                    FontSize="14" Foreground="{DynamicResource TapeText}" VerticalAlignment="Center" Margin="6,0,0,0"/>

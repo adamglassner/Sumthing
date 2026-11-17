@@ -1,7 +1,7 @@
 <UserControl x:Class="Sumthing.Views.SumsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <DockPanel Margin="12,6,12,10">
+    <DockPanel Margin="0">
         <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                 <ToggleButton x:Name="HelpToggle" Style="{StaticResource IconToggle}" Width="32" Height="32" Click="Help_Click"
@@ -32,19 +32,19 @@
             </TextBlock>
         </Border>
 
-        <Border DockPanel.Dock="Bottom" Margin="0,8,0,0" Padding="12,8" Background="{DynamicResource CardBg}"
-                BorderBrush="{DynamicResource Divider}" BorderThickness="1" CornerRadius="{DynamicResource KeyRadius}">
+        <Border DockPanel.Dock="Bottom" Margin="0,8,0,0" Padding="12,8" Background="{DynamicResource Brush.SurfaceAlt}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="{DynamicResource KeyRadius}">
             <DockPanel>
                 <Button x:Name="SendButton" DockPanel.Dock="Right" Content="Use in calculator" Padding="10,4" MinHeight="28" MinWidth="0"
                         Click="Send_Click" ToolTip="Put the last answer on the Standard calculator"/>
-                <TextBlock Text="Last answer" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
+                <TextBlock Text="Last answer" Foreground="{DynamicResource Brush.TextMuted}" VerticalAlignment="Center"/>
                 <TextBlock x:Name="LastAnswer" Text="—" FontWeight="SemiBold" FontSize="18" Margin="10,0"
-                           FontFamily="{DynamicResource DisplayFont}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                           FontFamily="{StaticResource DisplayFont}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
             </DockPanel>
         </Border>
 
-        <Border Background="{DynamicResource InputBg}" BorderBrush="{DynamicResource InputBorder}" BorderThickness="1"
-                CornerRadius="{DynamicResource KeyRadius}">
+        <Border Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                CornerRadius="14">
             <ScrollViewer x:Name="Scroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <Grid Margin="0,6">
                     <Grid.ColumnDefinitions>
@@ -68,7 +68,7 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="bd" Property="Background" Value="{DynamicResource ControlHoverBg}"/>
+                                                    <Setter TargetName="bd" Property="Background" Value="{DynamicResource Brush.HoverOverlay}"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>

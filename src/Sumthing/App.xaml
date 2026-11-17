@@ -7,7 +7,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- ThemeManager inserts the colour palette at index 0 at startup -->
                 <ResourceDictionary Source="Themes/Controls.xaml"/>
-                <ResourceDictionary Source="Themes/Calc.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

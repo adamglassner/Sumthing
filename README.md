@@ -1,6 +1,6 @@
 # Sumthing
 
-A calculator for Windows 10 and 11, by Bytehawk Studio. It does what the Windows calculator does and adds a paper tape, sums you can type in words, a unit and currency converter, and a few everyday tools.
+A calculator for Windows 10 and 11, by Bytehawk Studio. It does what the Windows calculator does, adds a graphing calculator modelled on the TI-84 and TI-Nspire, a TI-style scientific home screen, statistics, a paper tape, sums you can type in words, a unit and currency converter and a few everyday tools.
 
 **Download:** the latest **Sumthing-x.y.z-Setup.exe** (installer) or **Sumthing-x.y.z-win-x64.zip** (portable) from [Releases](../../releases), or install it from the **Bytehawk Studio Launcher**, which keeps it up to date.
 
@@ -8,8 +8,11 @@ A calculator for Windows 10 and 11, by Bytehawk Studio. It does what the Windows
 
 | | |
 |---|---|
+| **Graphing** | Like a TI-84 / TI-Nspire: functions, inequalities (shaded), polar, parametric, relations (x²+y²=25), points and scatter plots; sliders for any letter without a value; zoom presets, Window, Trace, Table and Analyze (zeros, min, max, intersections, value, dy/dx, ∫); key points marked automatically. |
+| **Scientific** | A TI-style home screen: Ans, 5→A, ►Frac, lists, radians/degrees, nCr, nDeriv, fnInt, Σ, normalcdf, invNorm and more. |
+| **Statistics** | Lists L1–L6, 1-Var and 2-Var Stats, seven regression models, one-click scatter plot with the fitted curve. |
 | **Standard** | The everyday calculator: memory, history, %, x², √x, 1/x, +/−. Exact decimal maths, so 0.1 + 0.2 = 0.3. |
-| **Three looks** | Modern **Light** and **Dark** (or follow Windows), with seven accent colours, and **Classic**, the Windows 7 calculator with its View / Edit / Help menus. |
+| **Looks** | The Bytehawk Studio design (sidebar, cards) in **Light** or **Dark** (or follow Windows) with seven accent colours; Modern or **Classic** (Windows 7) calculator keys; a **compact calculator** mode that can stay on top. |
 | **Tape** | A paper roll beside the calculator that prints every step like an adding machine. Click beside a line to add a note; copy, save (.txt) or print it. |
 | **Type-a-sum** | A notepad where every line is a sum, answered as you type: `12% of 340`, `80 + 15%`, `20% off 80`, `rent = 1,250` then `rent * 12`, `total`, `sqrt 81`, `5k`. Click an answer to copy it. |
 | **Converter** | Length, weight, temperature, volume, area, speed, time, data, fuel economy and **currency** (daily European Central Bank rates via the free [Frankfurter](https://frankfurter.dev) service, kept for offline use). Shows the amount in every unit at once. |
@@ -25,8 +28,10 @@ A calculator for Windows 10 and 11, by Bytehawk Studio. It does what the Windows
 | `F9`, `R`, `Q`, `@` | +/−, 1/x, x², √x |
 | `Ctrl+M` `Ctrl+R` `Ctrl+L` `Ctrl+P` `Ctrl+Q` | Memory store, recall, clear, add, subtract |
 | `Ctrl+C`, `Ctrl+V` | Copy the result; paste a number or a whole sum |
-| `Ctrl+1`–`Ctrl+4` | Standard, Type-a-sum, Converter, Everyday tools |
+| `Ctrl+1`–`Ctrl+7` | Standard, Scientific, Graphing, Statistics, Type-a-sum, Converter, Everyday tools |
+| `Ctrl+Shift+M`, `Ctrl+B` | Compact calculator, collapse the sidebar |
 | `Ctrl+T`, `Ctrl+H`, `Ctrl+,` | Tape, history, settings |
+| Graph: drag, wheel, Shift+drag, arrows | Move, zoom, zoom box, trace |
 
 ## Built with
 

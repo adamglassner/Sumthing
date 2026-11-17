@@ -146,7 +146,7 @@
 
             <Border Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="14">
                 <Border CornerRadius="13" ClipToBounds="True" Margin="1">
-                    <v:GraphCanvas x:Name="Canvas" AutomationProperties.Name="Graph"/>
+                    <v:GraphCanvas x:Name="Plot" AutomationProperties.Name="Graph"/>
                 </Border>
             </Border>
         </DockPanel>

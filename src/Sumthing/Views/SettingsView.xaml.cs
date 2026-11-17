@@ -23,13 +23,17 @@ public partial class SettingsView : UserControl
         ("%", "Percent"),
         ("F9", "Positive / negative"),
         ("R   Q   @", "1/x,  x²,  square root"),
-        ("Ctrl+M  Ctrl+R  Ctrl+L", "Memory store, recall, clear"),
+        ("Ctrl+M  Ctrl+R  Ctrl+L", "Memory store, recall, clear (on Standard)"),
         ("Ctrl+P  Ctrl+Q", "Add to / subtract from memory"),
         ("Ctrl+C  Ctrl+V", "Copy the result, paste a number or a sum"),
-        ("Ctrl+1 … Ctrl+4", "Standard, Type-a-sum, Converter, Everyday tools"),
-        ("Ctrl+T", "Show or hide the tape"),
-        ("Ctrl+H", "History"),
+        ("Ctrl+1 … Ctrl+7", "Standard, Scientific, Graphing, Statistics, Type-a-sum, Converter, Everyday tools"),
+        ("Ctrl+T   Ctrl+H", "Tape, history"),
+        ("Ctrl+Shift+M", "Compact calculator / full window"),
+        ("Ctrl+B", "Collapse or expand the sidebar"),
         ("Ctrl+,", "Settings"),
+        ("Graph: drag, wheel", "Move and zoom; Shift+drag zooms to a box"),
+        ("Graph: arrows", "Trace along a curve (Trace on); up and down switch curves"),
+        ("Scientific: ↑ ↓", "Bring back earlier lines"),
     };
 
     public SettingsView()
@@ -42,22 +46,20 @@ public partial class SettingsView : UserControl
             ShortcutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             var k = new TextBlock { Text = Shortcuts[i].Keys, FontFamily = new FontFamily("Cascadia Mono, Consolas"), FontSize = 12.5, Margin = new Thickness(0, 3, 16, 3) };
             var w = new TextBlock { Text = Shortcuts[i].What, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 3, 0, 3) };
-            w.SetResourceReference(TextBlock.ForegroundProperty, "TextSecondary");
+            w.SetResourceReference(TextBlock.ForegroundProperty, "Brush.TextMuted");
             Grid.SetRow(k, i); Grid.SetRow(w, i); Grid.SetColumn(w, 1);
             ShortcutGrid.Children.Add(k);
             ShortcutGrid.Children.Add(w);
         }
         foreach (var a in ThemeManager.Accents)
         {
-            var b = new Button
+            var b = new RadioButton
             {
-                Style = (Style)FindResource("SwatchButton"),
-                Width = 30, Height = 30, Margin = new Thickness(0, 0, 10, 6),
-                Background = new SolidColorBrush(a.Light),
-                ToolTip = a.Name, Tag = a.Name,
+                Style = (Style)FindResource("SwatchRadio"), Content = a.Name, Tag = new SolidColorBrush(a.Light), GroupName = "accent",
             };
             System.Windows.Automation.AutomationProperties.SetName(b, a.Name + " accent");
-            b.Click += Accent_Click;
+            string name = a.Name;
+            b.Click += (_, _) => { S.Accent = name; SettingsService.Commit(); };
             Swatches.Children.Add(b);
         }
         ThemeManager.ThemeChanged += Load;
@@ -71,19 +73,29 @@ public partial class SettingsView : UserControl
         ThemeSystem.IsChecked = S.Theme == ThemeMode.System;
         ThemeLight.IsChecked = S.Theme == ThemeMode.Light;
         ThemeDark.IsChecked = S.Theme == ThemeMode.Dark;
-        ThemeClassic.IsChecked = S.Theme == ThemeMode.Classic;
-        AccentPanel.Visibility = S.Theme == ThemeMode.Classic ? Visibility.Collapsed : Visibility.Visible;
+        KeysModern.IsChecked = S.KeypadStyle == KeypadStyle.Modern;
+        KeysClassic.IsChecked = S.KeypadStyle == KeypadStyle.Classic;
         foreach (var child in Swatches.Children)
-            if (child is Button b)
-            {
-                bool on = b.Tag as string == S.Accent;
-                b.BorderThickness = new Thickness(on ? 3 : 1);
-                b.BorderBrush = on ? (Brush)FindResource("Text") : (Brush)FindResource("ControlBorder");
-            }
+            if (child is RadioButton r) r.IsChecked = (string)r.Content == S.Accent;
         Separators.IsChecked = S.ThousandsSeparators;
         KeepSession.IsChecked = S.KeepBetweenSessions;
-        OnTop.IsChecked = Window.GetWindow(this)?.Topmost ?? S.AlwaysOnTop;
+        OnTop.IsChecked = S.AlwaysOnTop;
+        Radians.IsChecked = !MathState.Degrees;
+        Degrees.IsChecked = MathState.Degrees;
         _loading = false;
+    }
+
+    private void Keys_Click(object sender, RoutedEventArgs e)
+    {
+        if (_loading || sender is not FrameworkElement fe || !Enum.TryParse<KeypadStyle>(fe.Tag as string, out var k)) return;
+        S.KeypadStyle = k;
+        SettingsService.Commit();
+    }
+
+    private void Angle_Click(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        MathState.Degrees = Degrees.IsChecked == true;
     }
 
     private void Theme_Click(object sender, RoutedEventArgs e)
@@ -108,13 +120,12 @@ public partial class SettingsView : UserControl
         S.ThousandsSeparators = Separators.IsChecked == true;
         S.KeepBetweenSessions = KeepSession.IsChecked == true;
         S.AlwaysOnTop = OnTop.IsChecked == true;
-        if (Window.GetWindow(this) is Window w) w.Topmost = S.AlwaysOnTop;
         SettingsService.Commit();
         if (Window.GetWindow(this) is MainWindow mw) mw.Engine.Refresh(); // redraw with/without separators
     }
 
-    public void ScrollToAbout() => Dispatcher.InvokeAsync(() => AboutHeader.BringIntoView(), System.Windows.Threading.DispatcherPriority.Loaded);
-    public void ScrollToShortcuts() => Dispatcher.InvokeAsync(() => ShortcutsHeader.BringIntoView(), System.Windows.Threading.DispatcherPriority.Loaded);
+    public void ScrollToAbout() => Dispatcher.InvokeAsync(() => AboutCard.BringIntoView(), System.Windows.Threading.DispatcherPriority.Loaded);
+    public void ScrollToShortcuts() => Dispatcher.InvokeAsync(() => ShortcutsCard.BringIntoView(), System.Windows.Threading.DispatcherPriority.Loaded);
 
     private void Link_Navigate(object sender, RequestNavigateEventArgs e)
     {

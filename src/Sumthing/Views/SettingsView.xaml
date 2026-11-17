@@ -2,60 +2,85 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ScrollViewer x:Name="Scroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="14,0,14,16">
-            <TextBlock Text="Look" Style="{StaticResource SectionHeader}" Margin="0,6,0,8"/>
-            <Border Style="{StaticResource Card}">
+        <StackPanel MaxWidth="880" HorizontalAlignment="Left">
+            <!-- Appearance -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
                 <StackPanel>
-                    <RadioButton x:Name="ThemeSystem" GroupName="theme" Content="Follow Windows (light or dark)" Margin="0,2" Click="Theme_Click" Tag="System"/>
-                    <RadioButton x:Name="ThemeLight" GroupName="theme" Content="Light" Margin="0,2" Click="Theme_Click" Tag="Light"/>
-                    <RadioButton x:Name="ThemeDark" GroupName="theme" Content="Dark" Margin="0,2" Click="Theme_Click" Tag="Dark"/>
-                    <RadioButton x:Name="ThemeClassic" GroupName="theme" Margin="0,2" Click="Theme_Click" Tag="Classic">
-                        <TextBlock TextWrapping="Wrap">Classic <Run Foreground="{DynamicResource TextSecondary}" Text="(the Windows 7 calculator look, with a menu bar)"/></TextBlock>
-                    </RadioButton>
-                    <StackPanel x:Name="AccentPanel" Margin="0,12,0,0">
-                        <TextBlock Text="Accent colour" Style="{StaticResource Hint}" Margin="0,0,0,6"/>
-                        <WrapPanel x:Name="Swatches"/>
+                    <TextBlock Text="Appearance" Style="{StaticResource CardTitle}" Margin="0,0,0,14"/>
+                    <TextBlock Text="THEME" Style="{StaticResource SectionLabel}"/>
+                    <UniformGrid Columns="3">
+                        <RadioButton x:Name="ThemeSystem" Style="{StaticResource CardRadio}" GroupName="theme" Tag="System" Click="Theme_Click" Margin="0,0,10,10">
+                            <StackPanel><TextBlock Text="Follow Windows" FontWeight="SemiBold"/><TextBlock Style="{StaticResource Hint}" Text="Light or dark, as Windows is"/></StackPanel>
+                        </RadioButton>
+                        <RadioButton x:Name="ThemeLight" Style="{StaticResource CardRadio}" GroupName="theme" Tag="Light" Click="Theme_Click" Margin="0,0,10,10">
+                            <StackPanel><TextBlock Text="Light" FontWeight="SemiBold"/><TextBlock Style="{StaticResource Hint}" Text="Always light"/></StackPanel>
+                        </RadioButton>
+                        <RadioButton x:Name="ThemeDark" Style="{StaticResource CardRadio}" GroupName="theme" Tag="Dark" Click="Theme_Click" Margin="0,0,0,10">
+                            <StackPanel><TextBlock Text="Dark" FontWeight="SemiBold"/><TextBlock Style="{StaticResource Hint}" Text="Always dark"/></StackPanel>
+                        </RadioButton>
+                    </UniformGrid>
+
+                    <TextBlock Text="ACCENT COLOUR" Style="{StaticResource SectionLabel}" Margin="0,10,0,8"/>
+                    <WrapPanel x:Name="Swatches"/>
+
+                    <TextBlock Text="CALCULATOR KEYS" Style="{StaticResource SectionLabel}" Margin="0,10,0,8"/>
+                    <UniformGrid Columns="2">
+                        <RadioButton x:Name="KeysModern" Style="{StaticResource CardRadio}" GroupName="keys" Tag="Modern" Click="Keys_Click" Margin="0,0,10,0">
+                            <StackPanel><TextBlock Text="Modern" FontWeight="SemiBold"/><TextBlock Style="{StaticResource Hint}" Text="Rounded keys in your accent colour"/></StackPanel>
+                        </RadioButton>
+                        <RadioButton x:Name="KeysClassic" Style="{StaticResource CardRadio}" GroupName="keys" Tag="Classic" Click="Keys_Click">
+                            <StackPanel><TextBlock Text="Classic Windows" FontWeight="SemiBold"/><TextBlock Style="{StaticResource Hint}" Text="The Windows 7 calculator: blue glass keys and the LCD display" TextWrapping="Wrap"/></StackPanel>
+                        </RadioButton>
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Calculator -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Calculator" Style="{StaticResource CardTitle}" Margin="0,0,0,14"/>
+                    <CheckBox x:Name="Separators" Content="Show thousands separators (1,234,567)" Click="Option_Click"/>
+                    <CheckBox x:Name="KeepSession" Content="Remember history, memory, the tape and stored values" Margin="0,10,0,0" Click="Option_Click"/>
+                    <CheckBox x:Name="OnTop" Content="Keep the compact calculator on top of other windows" Margin="0,10,0,0" Click="Option_Click"/>
+                    <TextBlock Text="ANGLES (SCIENTIFIC AND GRAPHING)" Style="{StaticResource SectionLabel}" Margin="0,18,0,8"/>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name="Radians" Content="Radians" GroupName="angles" Margin="0,0,22,0" Click="Angle_Click"/>
+                        <RadioButton x:Name="Degrees" Content="Degrees" GroupName="angles" Click="Angle_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
 
-            <TextBlock Text="Numbers" Style="{StaticResource SectionHeader}"/>
-            <Border Style="{StaticResource Card}">
+            <!-- Shortcuts -->
+            <Border x:Name="ShortcutsCard" Style="{StaticResource Card}" Margin="0,0,0,16">
                 <StackPanel>
-                    <CheckBox x:Name="Separators" Content="Show thousands separators (1,234,567)" Click="Option_Click"/>
-                    <CheckBox x:Name="KeepSession" Content="Remember history, memory and the tape" Margin="0,8,0,0" Click="Option_Click"/>
-                    <CheckBox x:Name="OnTop" Content="Keep Sumthing on top of other windows" Margin="0,8,0,0" Click="Option_Click"/>
+                    <TextBlock Text="Keyboard shortcuts" Style="{StaticResource CardTitle}" Margin="0,0,0,12"/>
+                    <Grid x:Name="ShortcutGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
                 </StackPanel>
             </Border>
 
-            <TextBlock x:Name="ShortcutsHeader" Text="Keyboard shortcuts" Style="{StaticResource SectionHeader}"/>
-            <Border Style="{StaticResource Card}">
-                <Grid x:Name="ShortcutGrid">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                </Grid>
-            </Border>
-
-            <TextBlock x:Name="AboutHeader" Text="About" Style="{StaticResource SectionHeader}"/>
-            <Border Style="{StaticResource Card}">
+            <!-- About -->
+            <Border x:Name="AboutCard" Style="{StaticResource Card}">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Assets/sumthing-256.png" Width="48" Height="48" Margin="0,0,12,0"/>
+                        <Image Source="/Assets/sumthing-256.png" Width="52" Height="52" Margin="0,0,14,0" RenderOptions.BitmapScalingMode="HighQuality"/>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Sumthing" FontSize="18" FontWeight="SemiBold"/>
-                            <TextBlock x:Name="VersionText" Foreground="{DynamicResource TextSecondary}"/>
+                            <TextBlock Text="Sumthing" FontFamily="{StaticResource DisplayFont}" FontSize="20" FontWeight="Bold"/>
+                            <TextBlock x:Name="VersionText" Style="{StaticResource Muted}"/>
                         </StackPanel>
                     </StackPanel>
-                    <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}">
+                    <TextBlock Margin="0,12,0,0" TextWrapping="Wrap" Foreground="{DynamicResource Brush.TextMuted}">
                         © 2026 Bytehawk Studio ·
-                        <Hyperlink NavigateUri="https://github.com/adamglassner/sumthing" RequestNavigate="Link_Navigate">github.com/adamglassner/sumthing</Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/adamglassner/sumthing" RequestNavigate="Link_Navigate" Foreground="{DynamicResource Brush.Accent}">github.com/adamglassner/sumthing</Hyperlink>
                     </TextBlock>
-                    <TextBlock x:Name="RatesCredit" Margin="0,6,0,0" TextWrapping="Wrap" Style="{StaticResource Hint}"
-                               Text="Exchange rates: European Central Bank reference rates, via the free Frankfurter service."/>
-                    <TextBlock Text="What's new" FontWeight="SemiBold" Margin="0,14,0,4"/>
-                    <TextBox x:Name="ChangelogText" IsReadOnly="True" TextWrapping="Wrap" FontSize="12.5" MaxHeight="260"
+                    <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Style="{StaticResource Hint}"
+                               Text="Exchange rates: European Central Bank reference rates, via the free Frankfurter service. Icons: Fluent UI System Icons (MIT)."/>
+                    <TextBlock Text="WHAT'S NEW" Style="{StaticResource SectionLabel}" Margin="0,18,0,8"/>
+                    <TextBox x:Name="ChangelogText" IsReadOnly="True" TextWrapping="Wrap" FontSize="12.5" MaxHeight="300"
                              VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" AutomationProperties.Name="What's new"/>
                 </StackPanel>
             </Border>

@@ -71,10 +71,10 @@ public partial class SumsView : UserControl
     {
         var lines = Sheet.Text.Replace("\r\n", "\n").Split('\n');
         _results = SumSheet.Evaluate(lines);
-        var normal = (Brush)FindResource("Text");
-        var muted = (Brush)FindResource("TextSecondary");
-        var accent = (Brush)FindResource("Accent");
-        var danger = (Brush)FindResource("DangerText");
+        var normal = (Brush)FindResource("Brush.Text");
+        var muted = (Brush)FindResource("Brush.TextMuted");
+        var accent = (Brush)FindResource("Brush.Accent");
+        var danger = (Brush)FindResource("Brush.Danger");
         var rows = new List<AnswerRow>();
         foreach (var r in _results)
         {

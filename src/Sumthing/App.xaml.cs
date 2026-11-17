@@ -37,6 +37,7 @@ public partial class App : Application
             ThemeManager.Apply(SettingsService.Current);
         };
         CurrencyService.LoadCache();
+        MathState.Load(SettingsService.Current);
 
         var win = new MainWindow();
         MainWindow = win;

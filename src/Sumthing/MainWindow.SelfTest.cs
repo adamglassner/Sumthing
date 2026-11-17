@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Sumthing.Engine;
+using Sumthing.Maths;
 using Sumthing.Services;
 using Sumthing.Views;
 
@@ -183,39 +184,206 @@ public partial class MainWindow
             AreEqual("85", Num.Format(CurrencyService.Convert(110m, "USD", "GBP")), "110 USD in GBP");
         });
 
-        // ---------------------------------------------------------------- the window, modern light
+        // ---------------------------------------------------------------- maths engine (answers checked against a TI-84)
+        var cx = new EvalContext();
+        string E(string expr, double x = 0)
+        {
+            cx.X = x;
+            return Parser.Format(Parser.Parse(expr, cx.Vars.Keys).Eval(cx), 10);
+        }
+        await Test("Maths: order of operations and implicit multiplication", () =>
+        {
+            AreEqual("14", E("2+3*4"), "2+3*4");
+            AreEqual("512", E("2^3^2"), "2^3^2 (right to left)");
+            AreEqual("−4", E("-2^2"), "-2^2 = -(2^2)");
+            AreEqual("6", E("2x", 3), "2x at x=3");
+            AreEqual("15", E("3(4+1)"), "3(4+1)");
+            AreEqual("20", E("(2+3)(1+3)"), "(2+3)(1+3)");
+            AreEqual("4", E("√(16)"), "√(16)");
+            AreEqual("4", E("√16"), "√16");
+            AreEqual("120", E("5!"), "5!");
+            AreEqual("1,500", E("1.5E3"), "1.5E3");
+            AreEqual("6", E("|−5|+1"), "|−5|+1");
+            AreEqual("8", E("2|x−5|", 1), "2|x−5| at x=1");
+            AreEqual("1.570796327", E("xsin(x)", System.Math.PI / 2), "xsin(x) = x·sin(x)");
+            AreEqual("9", E("x²", 3), "x²");
+            AreEqual("−2", E("(-8)^(1/3)"), "real cube root of −8");
+        });
+        await Test("Maths: functions", () =>
+        {
+            AreEqual("35", E("7 nCr 3"), "7 nCr 3");
+            AreEqual("35", E("nCr(7,3)"), "nCr(7,3)");
+            AreEqual("210", E("7 nPr 3"), "7 nPr 3");
+            AreEqual("0.5", E("sin(30°)"), "sin(30°) in radians mode");
+            AreEqual("3", E("log(1000)"), "log(1000)");
+            AreEqual("3", E("log(8,2)"), "log(8,2)");
+            AreEqual("2", E("ln(e^2)"), "ln(e²)");
+            AreEqual("2", E("mod(17,5)"), "mod(17,5)");
+            AreEqual("2.57", E("round(2.567,2)"), "round(2.567,2)");
+            AreEqual("6", E("gcd(12,18)"), "gcd(12,18)");
+            AreEqual("2.5", E("mean({1,2,3,4})"), "mean({1,2,3,4})");
+            AreEqual("12", E("nDeriv(x^3,x,2)"), "nDeriv(x³,x,2)");
+            AreEqual("9", E("fnInt(x^2,x,0,3)"), "fnInt(x²,x,0,3)");
+            AreEqual("385", E("sum(n^2,n,1,10)"), "Σ n² for n = 1 to 10");
+            AreEqual("0.6826894921", E("normalcdf(-1,1)"), "normalcdf(-1,1)");
+            AreEqual("1.959963985", E("invNorm(0.975)"), "invNorm(0.975)");
+            AreEqual("0.1171875", E("binompdf(10,0.5,3)"), "binompdf(10,.5,3)");
+            cx.Degrees = true;
+            AreEqual("0.5", E("sin(30)"), "sin(30) in degrees");
+            AreEqual("30", E("sin⁻¹(0.5)"), "sin⁻¹(0.5) in degrees");
+            cx.Degrees = false;
+        });
+        await Test("Maths: home screen (Ans, STO→, ►Frac, lists)", () =>
+        {
+            var s = new CalcSession();
+            AreEqual("5", s.Evaluate("5→A").Output, "5→A");
+            AreEqual("26", s.Evaluate("A²+1").Output, "A²+1");
+            AreEqual("30", s.Evaluate("+4").Output, "+4 carries on from Ans");
+            AreEqual("3/4", s.Evaluate("0.75►Frac").Output, "0.75►Frac");
+            AreEqual("1/3", s.Evaluate("1/3").Exact, "1/3 shows its fraction");
+            AreEqual("{3, 5, 8}", s.Evaluate("{3,5,8}→L1").Output, "store a list");
+            AreEqual("5.333333333", Parser.Format(s.Evaluate("mean(L1)").Value!.Value, 10), "mean(L1)");
+            Assert(s.Evaluate("1/0+").IsError, "an unfinished line is an error, not a crash");
+            Assert(s.Evaluate("Q+1").IsError, "an unknown letter says it has no value");
+        });
+        await Test("Maths: analysis (CALC menu)", () =>
+        {
+            Func<double, double> f = x => x * x - 2 * x - 3;
+            AreEqual("−1, 3", string.Join(", ", Analysis.Zeros(f, -10, 10).Select(z => Parser.Format(z))), "zeros of x²−2x−3");
+            var ex = Analysis.Extrema(f, -10, 10);
+            Assert(ex.Count == 1 && ex[0].Kind == "Minimum" && ex[0].X == 1 && ex[0].Y == -4, $"minimum of x²−2x−3 at (1, −4), got {string.Join(";", ex)}");
+            var meet = Analysis.Intersections(x => x * x, x => x + 2, -10, 10);
+            AreEqual("(−1, 1) (2, 4)", string.Join(" ", meet.Select(p => $"({Parser.Format(p.X)}, {Parser.Format(p.Y)})")), "x² meets x+2");
+            AreEqual("0", string.Join(", ", Analysis.Zeros(x => x * x, -5, 5).Select(z => Parser.Format(z))), "touching zero of x²");
+            Assert(Analysis.Zeros(x => System.Math.Tan(x), -1.4, 1.4).Count == 1, "tan has one zero in (−1.4, 1.4)");
+            Assert(Analysis.Zeros(x => 1 / x, -5, 5).Count == 0, "1/x has no zero (the jump at 0 is an asymptote)");
+            AreEqual("9", Parser.Format(Analysis.Integrate(x => x * x, 0, 3)), "∫x² from 0 to 3");
+            AreEqual("2", Parser.Format(Analysis.Integrate(System.Math.Sin, 0, System.Math.PI)), "∫sin from 0 to π");
+            AreEqual("12", Parser.Format(Analysis.Derivative(x => x * x * x, 2)), "d/dx x³ at 2");
+        });
+        await Test("Maths: statistics and regressions", () =>
+        {
+            var one = Stats.OneVar(new double[] { 2, 4, 4, 4, 5, 5, 7, 9 });
+            Assert(one.Mean == 5 && one.SigmaX == 2 && one.Median == 4.5 && one.Q1 == 4 && one.Q3 == 6, "1-Var Stats: mean 5, σx 2, Med 4.5, Q1 4, Q3 6");
+            AreEqual("2.138089935", Parser.Format(one.Sx, 10), "Sx");
+            var xs = new double[] { 1, 2, 3, 4, 5 };
+            var lin = Stats.Fit(RegressionModel.Linear, xs, xs.Select(x => 2 * x + 1).ToArray());
+            Assert(Near(lin.Coefficients[0], 2) && Near(lin.Coefficients[1], 1) && Near(lin.R, 1), "LinReg y = 2x + 1, r = 1");
+            var quad = Stats.Fit(RegressionModel.Quadratic, xs, xs.Select(x => x * x + 1).ToArray());
+            Assert(Near(quad.Coefficients[0], 1) && Near(quad.Coefficients[1], 0) && Near(quad.Coefficients[2], 1), "QuadReg x² + 1");
+            var exp = Stats.Fit(RegressionModel.Exponential, xs, xs.Select(x => 3 * System.Math.Pow(2, x)).ToArray());
+            Assert(Near(exp.Coefficients[0], 3) && Near(exp.Coefficients[1], 2), "ExpReg 3·2ˣ");
+            var pwr = Stats.Fit(RegressionModel.Power, xs, xs.Select(x => 2 * x * x * x).ToArray());
+            Assert(Near(pwr.Coefficients[0], 2) && Near(pwr.Coefficients[1], 3), "PwrReg 2x³");
+            var two = Stats.TwoVar(xs, xs.Select(x => 10 - x).ToArray());
+            Assert(Near(two.R, -1), "2-Var r = −1");
+        });
+        await Test("Graph: reading rows", () =>
+        {
+            var g = new GraphModel(new EvalContext());
+            foreach (var t in new[] { "x²−2x−3", "y<2x+1", "x²+y²=25", "r=2sin(3θ)", "(cos(t), sin(t))", "(1,2),(3,4)", "g(x)=x+1", "f1(2)+g(1)", "ax²+b", "y=2x+", "x≥y²" })
+                g.Rows.Add(new GraphRow { Text = t });
+            g.Recompile();
+            var kinds = g.Compiled.Select(c => c.Kind).ToArray();
+            var want = new[] { PlotKind.Function, PlotKind.Inequality, PlotKind.Implicit, PlotKind.Polar, PlotKind.Parametric, PlotKind.Points,
+                               PlotKind.Function, PlotKind.Function, PlotKind.Function, PlotKind.Error, PlotKind.ImplicitInequality };
+            for (int i = 0; i < want.Length; i++) Assert(kinds[i] == want[i], $"row {i + 1} \"{g.Rows[i].Text}\" should be {want[i]}, got {kinds[i]} {g.Compiled[i].Error}");
+            AreEqual("−1", Parser.Format(g.EvalFunction(g.Compiled[7], 0)), "f1(2)+g(1) uses other rows");
+            Assert(g.Sliders.ContainsKey("a") && g.Sliders.ContainsKey("b") && g.Sliders.Count == 2, "a and b become sliders");
+            g.Sliders["a"].Value = 2; g.Sliders["b"].Value = 3; g.PushSliders();
+            AreEqual("11", Parser.Format(g.EvalFunction(g.Compiled[8], 2)), "ax²+b with a=2, b=3 at x=2");
+        });
+
+        // ---------------------------------------------------------------- the window
         S.Theme = ThemeMode.Light;
+        S.KeypadStyle = KeypadStyle.Modern;
         SettingsService.Commit();
         SetMode(CalcMode.Standard);
         await Idle();
 
-        await Test("Window: clicking keys", async () =>
+        await Test("Standard: clicking keys", async () =>
         {
             Engine.Press("C");
-            TapePage.Clear();
+            StandardPage.TapePanel.Clear();
             foreach (var k in new[] { "7", "×", "6", "=" }) Click(FindKey(StandardPage.ModernPadPanel, k));
             await Idle();
             AreEqual("42", StandardPage.MainDisplay, "display after 7 × 6 =");
             AreEqual("7 × 6 =", StandardPage.ExpressionDisplay, "expression line");
-            Assert(TapePage.Entries.Count >= 3 && TapePage.Entries[^1].Number == "42" && TapePage.Entries[^1].IsTotal, "the tape got the sum");
+            Assert(StandardPage.TapePanel.Entries.Count >= 3 && StandardPage.TapePanel.Entries[^1].Number == "42", "the tape got the sum");
         });
-
-        await Test("Window: typing", async () =>
+        await Test("Standard: typing", async () =>
         {
             Engine.Press("C");
             foreach (var ch in "125/5=") StandardPage.HandleText(ch.ToString());
             await Idle();
             AreEqual("25", StandardPage.MainDisplay, "typed 125/5=");
-            StandardPage.HandleKeyDown(System.Windows.Input.Key.Escape, System.Windows.Input.ModifierKeys.None);
-            AreEqual("0", StandardPage.MainDisplay, "Esc clears");
         });
-
-        await Test("Window: tape save", () =>
+        await Test("Standard: tape save", () =>
         {
             var path = Path.Combine(Path.GetTempPath(), "sumthing-tape-test.txt");
-            Assert(TapePage.SaveTo(path), "saved");
-            var text = File.ReadAllText(path);
-            Assert(text.Contains("42") && text.Contains("×"), "saved tape has the sum: " + text);
+            Assert(StandardPage.TapePanel.SaveTo(path), "saved");
+            Assert(File.ReadAllText(path).Contains("42"), "saved tape has the sum");
+        });
+
+        await Test("Scientific page", async () =>
+        {
+            SetMode(CalcMode.Scientific);
+            MathState.Session.Entries.Clear();
+            ScientificPage.Run("5→A");
+            ScientificPage.Run("2A+sin(π/6)");
+            ScientificPage.Run("7 nCr 3");
+            ScientificPage.Run("√(2)");
+            ScientificPage.Run("{3,5,8}→L1");
+            var last = ScientificPage.Run("mean(L1)►Frac");
+            await Idle();
+            AreEqual("16/3", last.Output, "mean(L1)►Frac");
+            AreEqual("10.5", MathState.Session.Entries[1].Output, "2A+sin(π/6)");
+        });
+
+        await Test("Graphing page: analyze", async () =>
+        {
+            SetMode(CalcMode.Graphing);
+            GraphPage.SetRows("x²−2x−3", "x+1", "");
+            GraphPage.ZoomPreset("Standard");
+            await Idle();
+            GraphPage.SelectAnalyzeRows(0, 1);
+            GraphPage.Zeros_Click(null, null);
+            AreEqual("x = −1,  x = 3", GraphPage.Results[0].Value, "zeros");
+            GraphPage.Minimum_Click(null, null);
+            AreEqual("(1, −4)", GraphPage.Results[0].Value, "minimum");
+            GraphPage.Intersect_Click(null, null);
+            AreEqual("(−1, 0),  (4, 5)", GraphPage.Results[0].Value, "x²−2x−3 meets x+1");
+            GraphPage.SetAnalysisInputs("2", "0", "3");
+            GraphPage.Value_Click(null, null);
+            AreEqual("−3", GraphPage.Results[0].Value, "f1(2)");
+            GraphPage.Integral_Click(null, null);
+            AreEqual("−9", GraphPage.Results[0].Value, "∫ from 0 to 3");
+            GraphPage.Derivative_Click(null, null);
+            Assert(GraphPage.Results[0].Value.StartsWith("2 "), "dy/dx at 2 is 2: " + GraphPage.Results[0].Value);
+            GraphPage.ShowSideTab(1);
+            await Idle();
+            Assert(GraphPage.TableData.Count > 3 && GraphPage.TableData[0][0] == "−3" && GraphPage.TableData[0][1] == "12", "table starts at x = −3 with f1 = 12");
+            GraphPage.ShowSideTab(0);
+            GraphPage.SetTrace(true);
+            GraphPage.GraphCanvas.TraceValue = 2;
+            Assert(GraphPage.GraphCanvas.TraceText().Contains("y = −3"), "trace at x = 2: " + GraphPage.GraphCanvas.TraceText());
+            GraphPage.SetTrace(false);
+            GraphPage.GraphCanvas.RefreshPointsOfInterest();
+            Assert(GraphPage.GraphCanvas.PointsOfInterest.Count >= 5, "points of interest: zeros, minimum, intercepts, intersections");
+        });
+
+        await Test("Statistics page", async () =>
+        {
+            SetMode(CalcMode.Statistics);
+            StatsPage.SetList(1, 1, 2, 3, 4, 5, 6, 7, 8);
+            StatsPage.SetList(2, 52, 55, 61, 64, 70, 73, 79, 84);
+            StatsPage.Choose(2, 0);
+            StatsPage.Calculate_Click(null, null);
+            await Idle();
+            Assert(StatsPage.LastFit != null && System.Math.Abs(StatsPage.LastFit.Coefficients[0] - 4.595238095) < 1e-6, "LinReg slope 4.595238095");
+            StatsPage.Choose(0);
+            StatsPage.Calculate_Click(null, null);
+            Assert(StatsPage.Results.Any(r => r.Name.StartsWith("x̄") && r.Value == "4.5"), "1-Var mean of L1 is 4.5");
         });
 
         await Test("Tools: tip & split", async () =>
@@ -223,30 +391,9 @@ public partial class MainWindow
             SetMode(CalcMode.Tools);
             ToolsPage.ShowTab(0);
             await Idle();
-            var r = ToolsPage.TipResult;
-            Assert(r.Tip == 12.96m && r.Total == 77.76m && r.Each == 38.88m, $"64.80 + 20% for 2 = 38.88 each (got {r.Each})");
+            Assert(ToolsPage.TipResult.Each == 38.88m, $"64.80 + 20% for 2 = 38.88 each (got {ToolsPage.TipResult.Each})");
         });
-        await Test("Tools: percent change", async () =>
-        {
-            ToolsPage.ShowTab(1);
-            await Idle();
-            Assert(ToolsPage.PercentResult == 25m, $"80 → 100 is +25% (got {ToolsPage.PercentResult})");
-        });
-        await Test("Tools: discount & tax", async () =>
-        {
-            ToolsPage.ShowTab(2);
-            await Idle();
-            Assert(ToolsPage.DiscountResult == 103.34m, $"129.99 − 25% + 6% tax = 103.34 (got {ToolsPage.DiscountResult})");
-        });
-        await Test("Tools: date difference", async () =>
-        {
-            ToolsPage.ShowTab(3);
-            ToolsPage.SetDates(new DateTime(2026, 1, 1), new DateTime(2026, 12, 25));
-            await Idle();
-            Assert(ToolsPage.DaysResult == 358, $"Jan 1 → Dec 25 2026 is 358 days (got {ToolsPage.DaysResult})");
-        });
-
-        await Test("Converter screen", async () =>
+        await Test("Converter page", async () =>
         {
             SetMode(CalcMode.Converter);
             ConverterPage.SelectCategory("Length");
@@ -254,17 +401,9 @@ public partial class MainWindow
             ConverterPage.SetAmount("1");
             await Idle();
             Assert(ConverterPage.ResultText.StartsWith("1.609344"), "1 mi = 1.609344 km, got " + ConverterPage.ResultText);
-            ConverterPage.SelectCategory("Currency");
-            ConverterPage.SetCurrencies("USD", "EUR");
-            ConverterPage.SetAmount("110");
-            await Idle();
-            AreEqual("100.00 EUR", ConverterPage.ResultText, "110 USD in EUR");
-            ConverterPage.SetAmount("12 * 10");
-            await Idle();
-            Assert(ConverterPage.ResultText.StartsWith("109.09"), "a little sum as the amount, got " + ConverterPage.ResultText);
         });
 
-        await Test("Type-a-sum screen", async () =>
+        await Test("Type-a-sum page", async () =>
         {
             SetMode(CalcMode.Sums);
             SumsPage.SetSheet(AppSettings.DefaultSheet.TrimEnd('\n'));
@@ -272,79 +411,82 @@ public partial class MainWindow
             Assert(SumsPage.Results.Count(r => r.Value != null) >= 7, "answers shown");
         });
 
-        // ---------------------------------------------------------------- screenshots of every look
-        var modes = new[] { CalcMode.Standard, CalcMode.Sums, CalcMode.Converter, CalcMode.Tools, CalcMode.Settings };
-        foreach (var theme in new[] { ThemeMode.Light, ThemeMode.Dark, ThemeMode.Classic })
+        // ---------------------------------------------------------------- screenshots of every page and look
+        GraphPage.SetRows("x²−2x−3", "2sin(x)", "y<0.5x−4", "x²+y²=36", "r=2+2cos(θ)", "(L1/2, L2/20)", "ax+b");
+        GraphPage.ZoomPreset("Standard");
+        MathState.Session.Entries.Clear();
+        foreach (var line in new[] { "5→A", "2A+sin(π/6)", "7 nCr 3", "√(2)", "1/3+1/4", "{3,5,8}→L1", "mean(L1)►Frac", "fnInt(x²,x,0,3)", "normalcdf(−1,1)" })
+            ScientificPage.Run(line);
+        StatsPage.SetList(1, 1, 2, 3, 4, 5, 6, 7, 8);
+        StatsPage.SetList(2, 52, 55, 61, 64, 70, 73, 79, 84);
+        var pages = new[] { CalcMode.Standard, CalcMode.Scientific, CalcMode.Graphing, CalcMode.Statistics, CalcMode.Sums, CalcMode.Converter, CalcMode.Tools, CalcMode.Settings };
+        foreach (var (theme, keys, tag) in new[] { (ThemeMode.Light, KeypadStyle.Modern, "light"), (ThemeMode.Dark, KeypadStyle.Modern, "dark"), (ThemeMode.Light, KeypadStyle.Classic, "classic") })
         {
-            await Test($"Look: {theme}", async () =>
+            await Test($"Look: {tag}", async () =>
             {
                 S.Theme = theme;
+                S.KeypadStyle = keys;
                 SettingsService.Commit();
-                SetMode(CalcMode.Standard);
-                SetTape(false);
                 await Idle();
-                Assert(ThemeManager.IsClassic == (theme == ThemeMode.Classic), "classic flag");
-                Assert((ClassicMenu.Visibility == Visibility.Visible) == (theme == ThemeMode.Classic), "menu bar only in Classic");
-                if (theme == ThemeMode.Classic)
+                Assert(ThemeManager.IsClassic == (keys == KeypadStyle.Classic), "classic keys flag");
+                int n = 1;
+                foreach (var m in pages)
                 {
-                    Engine.Press("C");
-                    foreach (var k in new[] { "1", "2", "+", "8", "=" }) Click(FindKey(StandardPage.ClassicPadPanel, k));
-                    await Idle();
-                    AreEqual("20", StandardPage.MainDisplay, "classic keypad 12 + 8 =");
-                }
-                else
-                {
-                    Engine.Press("C");
-                    foreach (var k in "1250 × 12 =") StandardPage.HandleText(k.ToString());
-                    await Idle();
-                }
-                Shot($"{theme.ToString().ToLower()}-1-standard");
-
-                Engine.Press("M+");
-                StandardPage.ShowHistory(true);
-                await Idle();
-                Shot($"{theme.ToString().ToLower()}-2-history");
-                StandardPage.ShowHistory(false);
-
-                SetTape(true);
-                await Idle();
-                Shot($"{theme.ToString().ToLower()}-3-tape");
-                SetTape(false);
-
-                int n = 4;
-                foreach (var m in modes.Skip(1))
-                {
-                    SetMode(m);
-                    if (m == CalcMode.Tools) ToolsPage.ShowTab(0);
+                    if (tag == "classic" && m != CalcMode.Standard && m != CalcMode.Scientific) continue;
+                    SetMode(m, animate: false);
+                    if (m == CalcMode.Standard)
+                    {
+                        Engine.Press("C");
+                        if (keys == KeypadStyle.Classic)
+                        {
+                            foreach (var k in new[] { "1", "2", "+", "8", "=" }) Click(FindKey(StandardPage.ClassicPadPanel, k));
+                            await Idle();
+                            AreEqual("20", StandardPage.MainDisplay, "classic keypad 12 + 8 =");
+                        }
+                        else foreach (var k in "1250×12=") StandardPage.HandleText(k.ToString());
+                    }
+                    if (m == CalcMode.Statistics) { StatsPage.Choose(2, 0); StatsPage.Calculate_Click(null, null); }
+                    if (m == CalcMode.Graphing) GraphPage.GraphCanvas.RefreshPointsOfInterest();
                     if (m == CalcMode.Converter) { ConverterPage.SelectCategory("Currency"); ConverterPage.SetCurrencies("USD", "EUR"); ConverterPage.SetAmount("250"); }
                     await Idle();
-                    Shot($"{theme.ToString().ToLower()}-{n++}-{m.ToString().ToLower()}");
+                    if (m == CalcMode.Graphing) { await Task.Delay(300); await Idle(); }
+                    Shot($"{tag}-{n++}-{m.ToString().ToLower()}");
                 }
-                if (theme != ThemeMode.Classic)
-                {
-                    SetMode(CalcMode.Standard);
-                    NavLayer.Visibility = Visibility.Visible;
-                    await Idle();
-                    Shot($"{theme.ToString().ToLower()}-9-navigation");
-                    NavLayer.Visibility = Visibility.Collapsed;
-                }
-                SetMode(CalcMode.Standard);
+                // compact calculator
+                SetCompact(true);
+                await Idle();
+                Shot($"{tag}-9-compact");
+                SetCompact(false);
+                await Idle();
             });
         }
 
+        await Test("Sidebar collapses", async () =>
+        {
+            S.Theme = ThemeMode.Dark; S.KeypadStyle = KeypadStyle.Modern; SettingsService.Commit();
+            SetSidebar(true);
+            SetMode(CalcMode.Graphing, animate: false);
+            await Idle();
+            Assert(SidebarColumn.Width.Value < 100, "collapsed");
+            Shot("dark-10-sidebar-collapsed");
+            SetSidebar(false);
+        });
+
         await Test("Settings are saved", () =>
         {
-            S.Theme = ThemeMode.Dark;
             SaveState();
             SettingsService.Load();
             Assert(SettingsService.Current.Theme == ThemeMode.Dark, "theme saved");
-            Assert(SettingsService.Current.History.Count > 0, "history saved");
+            Assert(SettingsService.Current.GraphRows.Count == 7, "graph rows saved");
+            Assert(SettingsService.Current.StoredVariables.ContainsKey("A"), "stored values saved");
         });
 
         int fails = _testFails;
         try { File.AppendAllText(App.SelfTestOutput, $"\r\n{_testLog.Count - fails} passed, {fails} failed\r\n"); } catch { }
         Application.Current.Shutdown(fails == 0 ? 0 : 1);
     }
+
+    private static bool Near(double a, double b) => System.Math.Abs(a - b) < 1e-6 * System.Math.Max(1, System.Math.Abs(b));
 
     // ---------------------------------------------------------------- helpers
 

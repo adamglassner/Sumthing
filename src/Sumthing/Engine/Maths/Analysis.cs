@@ -99,6 +99,7 @@ public static class Analysis
                 && System.Math.Sign(ys[i - 2]) == System.Math.Sign(y1) && System.Math.Sign(y0) == System.Math.Sign(y1))
             {
                 double m = GoldenMin(x => System.Math.Abs(f(x)), x0 - step, x1);
+                m = RefineTurn(f, x0 - step, x1, m);
                 double fm = f(m);
                 if (Ok(fm) && System.Math.Abs(fm) < 1e-9 * System.Math.Max(1, scale)) Add(found, m, step);
             }
@@ -149,6 +150,24 @@ public static class Analysis
         return (a + b) / 2;
     }
 
+    /// <summary>Sharpens a turning point by finding where the slope changes sign (golden section alone is only good to ~1e-8).</summary>
+    private static double RefineTurn(Func<double, double> f, double lo, double hi, double guess)
+    {
+        double dl = Derivative(f, lo), dh = Derivative(f, hi);
+        if (!Ok(dl) || !Ok(dh) || System.Math.Sign(dl) == System.Math.Sign(dh) || dl == 0 || dh == 0) return guess;
+        for (int k = 0; k < 200; k++)
+        {
+            double m = (lo + hi) / 2;
+            double dm = Derivative(f, m);
+            if (!Ok(dm)) return guess;
+            if (dm == 0 || hi - lo < 1e-15 * System.Math.Max(1, System.Math.Abs(m))) return m;
+            if (System.Math.Sign(dm) == System.Math.Sign(dl)) { lo = m; dl = dm; } else hi = m;
+        }
+        double r = (lo + hi) / 2;
+        // keep whichever is really lower/higher
+        return System.Math.Abs(f(r) - f(guess)) <= 1e-12 * System.Math.Max(1, System.Math.Abs(f(guess))) ? r : guess;
+    }
+
     /// <summary>Local minima and maxima of f in (a, b).</summary>
     public static List<FoundPoint> Extrema(Func<double, double> f, double a, double b, int samples = 800)
     {
@@ -167,6 +186,7 @@ public static class Analysis
             if (!isMax && !isMin) continue;
             double lo = a + (i - 1) * step, hi = a + (i + 1) * step;
             double x = isMin ? GoldenMin(f, lo, hi) : GoldenMin(t => -f(t), lo, hi);
+            x = RefineTurn(f, lo, hi, x);
             double y = f(x);
             if (!Ok(y)) continue;
             // a cusp at an asymptote isn't a turning point

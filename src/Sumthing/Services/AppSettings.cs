@@ -3,11 +3,14 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Sumthing.Engine;
+using Sumthing.Maths;
 
 namespace Sumthing.Services;
 
+/// <summary>App colours. "Classic" is only read from 1.0 settings (it becomes Light + the Classic keypad).</summary>
 public enum ThemeMode { System, Light, Dark, Classic }
-public enum CalcMode { Standard, Sums, Converter, Tools, Settings }
+public enum KeypadStyle { Modern, Classic }
+public enum CalcMode { Standard, Sums, Converter, Tools, Settings, Scientific, Graphing, Statistics }
 
 public static class AppInfo
 {
@@ -21,6 +24,9 @@ public sealed class AppSettings
     // ---- Appearance ----
     public ThemeMode Theme { get; set; } = ThemeMode.System;
     public string Accent { get; set; } = "Ember";
+    public KeypadStyle KeypadStyle { get; set; } = KeypadStyle.Modern;
+    public bool SidebarCollapsed { get; set; }
+    public bool CompactMode { get; set; }
 
     // ---- Behaviour ----
     public bool ThousandsSeparators { get; set; } = true;
@@ -40,14 +46,35 @@ public sealed class AppSettings
     public List<TapeEntry> Tape { get; set; } = new();
     public decimal? Memory { get; set; }
     public string SumSheet { get; set; } = DefaultSheet;
+    public string RightPanel { get; set; } = "Tape";
+
+    // ---- Scientific / Graphing / Statistics (shared like one TI's memory) ----
+    public bool AngleDegrees { get; set; }
+    public double Ans { get; set; }
+    public Dictionary<string, double> StoredVariables { get; set; } = new();
+    public Dictionary<string, double[]> Lists { get; set; } = new();
+    public List<HomeEntry> HomeHistory { get; set; } = new();
+    public List<GraphRow> GraphRows { get; set; } = new();
+    public GraphWindow GraphWindow { get; set; }
+    public Dictionary<string, SliderInfo> Sliders { get; set; } = new();
+
+    public static List<GraphRow> DefaultGraphRows() => new()
+    {
+        new GraphRow { Text = "x²−2x−3", ColorIndex = 0 },
+        new GraphRow { Text = "2sin(x)", ColorIndex = 1 },
+        new GraphRow { Text = "", ColorIndex = 4 },
+    };
 
     // ---- Window ----
     public double WinLeft { get; set; } = double.NaN;
     public double WinTop { get; set; } = double.NaN;
-    public double WinWidth { get; set; } = 360;
-    public double WinHeight { get; set; } = 600;
-    public double ClassicWidth { get; set; } = 264;
-    public double ClassicHeight { get; set; } = 380;
+    public double WinWidth { get; set; } = 1280;
+    public double WinHeight { get; set; } = 820;
+    public bool WinMaximized { get; set; }
+    public double CompactLeft { get; set; } = double.NaN;
+    public double CompactTop { get; set; } = double.NaN;
+    /// <summary>Settings from Sumthing 1.x had a small window; 2.0 starts large.</summary>
+    public int SettingsVersion { get; set; }
 
     public const string DefaultSheet =
         "# Try typing a sum on each line\n" +
@@ -124,13 +151,24 @@ public static class SettingsService
         s.History ??= new();
         s.Tape ??= new();
         s.SumSheet ??= AppSettings.DefaultSheet;
+        s.StoredVariables ??= new();
+        s.Lists ??= new();
+        s.HomeHistory ??= new();
+        s.GraphRows ??= new();
+        s.Sliders ??= new();
+        // 1.x had "Classic" as a theme; in 2.0 it's a keypad style on top of Light
+        if (s.Theme == ThemeMode.Classic) { s.Theme = ThemeMode.Light; s.KeypadStyle = KeypadStyle.Classic; }
+        if (s.SettingsVersion < 2)
+        {
+            s.WinWidth = 1280; s.WinHeight = 820;
+            s.SettingsVersion = 2;
+        }
         if (s.Mode == CalcMode.Settings) s.Mode = CalcMode.Standard;
         if (s.History.Count > 100) s.History.RemoveRange(100, s.History.Count - 100);
         if (s.Tape.Count > 2000) s.Tape.RemoveRange(0, s.Tape.Count - 2000);
-        if (double.IsNaN(s.WinWidth) || s.WinWidth < 320) s.WinWidth = 360;
-        if (double.IsNaN(s.WinHeight) || s.WinHeight < 480) s.WinHeight = 600;
-        if (double.IsNaN(s.ClassicWidth) || s.ClassicWidth < 240) s.ClassicWidth = 264;
-        if (double.IsNaN(s.ClassicHeight) || s.ClassicHeight < 330) s.ClassicHeight = 380;
+        if (double.IsNaN(s.WinWidth) || s.WinWidth < 900) s.WinWidth = 1280;
+        if (double.IsNaN(s.WinHeight) || s.WinHeight < 600) s.WinHeight = 820;
+        if (s.GraphWindow != null && (!(s.GraphWindow.XMax > s.GraphWindow.XMin) || !(s.GraphWindow.YMax > s.GraphWindow.YMin))) s.GraphWindow = null;
         s.ToolTab = Math.Clamp(s.ToolTab, 0, 3);
     }
 }

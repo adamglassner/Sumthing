@@ -2,146 +2,185 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:v="clr-namespace:Sumthing.Views"
-        Style="{StaticResource AppWindow}"
-        Title="Sumthing" Icon="Assets/sumthing.ico"
-        Width="360" Height="600" MinWidth="240" MinHeight="330"
-        WindowStartupLocation="CenterScreen">
-    <Grid x:Name="Root">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        Title="Sumthing"
+        Icon="pack://application:,,,/Assets/sumthing.ico"
+        Width="1280" Height="820" MinWidth="980" MinHeight="640"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource Brush.Bg}"
+        Foreground="{DynamicResource Brush.Text}"
+        FontFamily="Segoe UI" FontSize="13.5"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True">
+    <Grid x:Name="Root" Background="{DynamicResource Brush.Bg}">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SidebarColumn" Width="248"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <!-- ===== Classic look: menu bar like the Windows 7 calculator ===== -->
-        <Menu x:Name="ClassicMenu" Grid.ColumnSpan="2" Style="{StaticResource MenuBar}" Padding="2,0" Visibility="Collapsed">
-            <MenuItem Header="_View" Style="{StaticResource TopMenuItem}">
-                <MenuItem x:Name="MenuStandard" Header="_Standard" InputGestureText="Ctrl+1" Tag="Standard" Click="MenuMode_Click"/>
-                <MenuItem x:Name="MenuSums" Header="_Type-a-sum" InputGestureText="Ctrl+2" Tag="Sums" Click="MenuMode_Click"/>
-                <MenuItem x:Name="MenuConverter" Header="_Converter" InputGestureText="Ctrl+3" Tag="Converter" Click="MenuMode_Click"/>
-                <MenuItem x:Name="MenuTools" Header="_Everyday tools" InputGestureText="Ctrl+4" Tag="Tools" Click="MenuMode_Click"/>
-                <Separator/>
-                <MenuItem x:Name="MenuTape" Header="T_ape" InputGestureText="Ctrl+T" Click="TapeToggle_Click"/>
-                <MenuItem x:Name="MenuHistory" Header="_History" InputGestureText="Ctrl+H" Click="History_Click"/>
-                <Separator/>
-                <MenuItem Header="_Look">
-                    <MenuItem x:Name="MenuThemeSystem" Header="Follow _Windows (modern)" Tag="System" Click="MenuTheme_Click"/>
-                    <MenuItem x:Name="MenuThemeLight" Header="_Light" Tag="Light" Click="MenuTheme_Click"/>
-                    <MenuItem x:Name="MenuThemeDark" Header="_Dark" Tag="Dark" Click="MenuTheme_Click"/>
-                    <MenuItem x:Name="MenuThemeClassic" Header="_Classic" Tag="Classic" Click="MenuTheme_Click"/>
-                </MenuItem>
-                <MenuItem x:Name="MenuOnTop" Header="Keep on _top" Click="Pin_Click"/>
-                <Separator/>
-                <MenuItem Header="Se_ttings..." Tag="Settings" Click="MenuMode_Click"/>
-            </MenuItem>
-            <MenuItem Header="_Edit" Style="{StaticResource TopMenuItem}">
-                <MenuItem Header="_Copy" InputGestureText="Ctrl+C" Click="Copy_Click"/>
-                <MenuItem Header="_Paste" InputGestureText="Ctrl+V" Click="Paste_Click"/>
-                <Separator/>
-                <MenuItem Header="Copy t_ape" Click="CopyTape_Click"/>
-                <MenuItem Header="C_lear tape" Click="ClearTape_Click"/>
-                <MenuItem Header="Clear _history" Click="ClearHistory_Click"/>
-            </MenuItem>
-            <MenuItem Header="_Help" Style="{StaticResource TopMenuItem}">
-                <MenuItem Header="_Keyboard shortcuts" Click="Shortcuts_Click"/>
-                <Separator/>
-                <MenuItem Header="_About Sumthing" Click="About_Click"/>
-            </MenuItem>
-        </Menu>
-
-        <!-- ===== Modern looks: header with the navigation button ===== -->
-        <Grid x:Name="Header" Grid.Row="1" Margin="4,4,4,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="NavButton" Style="{StaticResource IconButton}" Width="40" Height="40" Click="Nav_Click"
-                    ToolTip="Open navigation" AutomationProperties.Name="Open navigation">
-                <TextBlock Style="{StaticResource Icon}" Text="&#xE700;"/>
-            </Button>
-            <TextBlock x:Name="ModeTitle" Grid.Column="1" Text="Standard" FontSize="20" FontWeight="SemiBold"
-                       VerticalAlignment="Center" Margin="6,0,0,2" TextTrimming="CharacterEllipsis"/>
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
-                <ToggleButton x:Name="PinToggle" Style="{StaticResource IconToggle}" Width="40" Height="40" Click="Pin_Click"
-                              ToolTip="Keep on top" AutomationProperties.Name="Keep on top">
-                    <TextBlock Style="{StaticResource Icon}" Text="&#xE718;" FontSize="15"/>
-                </ToggleButton>
-                <ToggleButton x:Name="TapeToggle" Style="{StaticResource IconToggle}" Width="40" Height="40" Click="TapeToggle_Click"
-                              ToolTip="Tape (Ctrl+T)" AutomationProperties.Name="Tape">
-                    <TextBlock Style="{StaticResource Icon}" Text="&#xE8A5;" FontSize="15"/>
-                </ToggleButton>
-                <Button x:Name="HistoryButton" Style="{StaticResource IconButton}" Width="40" Height="40" Click="History_Click"
-                        ToolTip="History (Ctrl+H)" AutomationProperties.Name="History">
-                    <TextBlock Style="{StaticResource Icon}" Text="&#xE81C;"/>
-                </Button>
-            </StackPanel>
-        </Grid>
-
-        <!-- ===== The modes ===== -->
-        <Grid x:Name="Host" Grid.Row="2">
-            <v:StandardView x:Name="StandardPage"/>
-            <v:SumsView x:Name="SumsPage" Visibility="Collapsed"/>
-            <v:ConverterView x:Name="ConverterPage" Visibility="Collapsed"/>
-            <v:ToolsView x:Name="ToolsPage" Visibility="Collapsed"/>
-            <v:SettingsView x:Name="SettingsPage" Visibility="Collapsed"/>
-        </Grid>
-
-        <!-- ===== Tape (paper roll) on the right ===== -->
-        <v:TapePanel x:Name="TapePage" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Width="290" Visibility="Collapsed"/>
-
-        <!-- ===== Navigation pane (slides over the content) ===== -->
-        <Grid x:Name="NavLayer" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Visibility="Collapsed">
-            <Border Background="#33000000" MouseLeftButtonDown="NavDismiss_MouseDown"/>
-            <Border x:Name="NavPane" Width="250" HorizontalAlignment="Left" Background="{DynamicResource MenuBg}"
-                    BorderBrush="{DynamicResource ControlBorder}" BorderThickness="0,0,1,0">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="18" ShadowDepth="2" Opacity="0.25" Direction="0"/>
-                </Border.Effect>
-                <DockPanel Margin="0,4,0,8">
-                    <Button DockPanel.Dock="Top" Style="{StaticResource IconButton}" Width="40" Height="40" Margin="4,0,0,4"
-                            HorizontalAlignment="Left" Click="Nav_Click" ToolTip="Close navigation" AutomationProperties.Name="Close navigation">
-                        <TextBlock Style="{StaticResource Icon}" Text="&#xE700;"/>
+        <!-- ===== Sidebar ===== -->
+        <Border x:Name="Sidebar" Background="{DynamicResource Brush.Sidebar}" Padding="16,20,16,14">
+            <DockPanel>
+                <!-- Logo -->
+                <DockPanel DockPanel.Dock="Top" Margin="4,0,0,18">
+                    <Button x:Name="CollapseButton" DockPanel.Dock="Right" Style="{StaticResource BaseButton}" Padding="6" MinHeight="30"
+                            Foreground="{DynamicResource Brush.SidebarMuted}" Click="Collapse_Click" VerticalAlignment="Center"
+                            ToolTip="Collapse the sidebar (Ctrl+B)" AutomationProperties.Name="Collapse the sidebar">
+                        <TextBlock x:Name="CollapseGlyph" Text="&#xE76B;" Style="{StaticResource Icon}" FontSize="14"/>
                     </Button>
-                    <RadioButton x:Name="NavSettings" DockPanel.Dock="Bottom" Style="{StaticResource NavItem}" GroupName="nav" Tag="Settings" Click="NavItem_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource Icon}" Text="&#xE713;" Margin="0,0,14,0"/>
-                            <TextBlock Text="Settings" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <StackPanel>
-                        <TextBlock Text="Calculator" Margin="18,6,0,4" FontWeight="SemiBold" FontSize="12.5" Foreground="{DynamicResource TextSecondary}"/>
-                        <RadioButton x:Name="NavStandard" Style="{StaticResource NavItem}" GroupName="nav" Tag="Standard" Click="NavItem_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource Icon}" Text="&#xE8EF;" Margin="0,0,14,0"/>
-                                <TextBlock Text="Standard" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton x:Name="NavSums" Style="{StaticResource NavItem}" GroupName="nav" Tag="Sums" Click="NavItem_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource Icon}" Text="&#xE70F;" Margin="0,0,14,0"/>
-                                <TextBlock Text="Type-a-sum" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </RadioButton>
-                        <TextBlock Text="More" Margin="18,14,0,4" FontWeight="SemiBold" FontSize="12.5" Foreground="{DynamicResource TextSecondary}"/>
-                        <RadioButton x:Name="NavConverter" Style="{StaticResource NavItem}" GroupName="nav" Tag="Converter" Click="NavItem_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource Icon}" Text="&#xE8AB;" Margin="0,0,14,0"/>
-                                <TextBlock Text="Converter" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton x:Name="NavTools" Style="{StaticResource NavItem}" GroupName="nav" Tag="Tools" Click="NavItem_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource Icon}" Text="&#xE90F;" Margin="0,0,14,0"/>
-                                <TextBlock Text="Everyday tools" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </RadioButton>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Assets/sumthing-256.png" Width="34" Height="34" Margin="0,0,10,0"
+                               RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="Wordmark" FontFamily="{StaticResource DisplayFont}" FontSize="22" FontWeight="Bold" VerticalAlignment="Center">
+                            <Run Text="Sum" Foreground="{DynamicResource Brush.SidebarText}"/><Run Text="thing" Foreground="{DynamicResource Brush.Highlight}"/>
+                        </TextBlock>
                     </StackPanel>
                 </DockPanel>
+
+                <!-- Bottom: answer card, compact, theme, settings -->
+                <StackPanel DockPanel.Dock="Bottom">
+                    <Border x:Name="AnsCard" Background="{DynamicResource Brush.SidebarCard}" CornerRadius="14" Padding="14,12" Margin="0,0,0,8">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE945;" Style="{StaticResource Icon}" FontSize="13" Margin="0,0,8,0" Foreground="{DynamicResource Brush.Mint}"/>
+                                <TextBlock Text="Last answer" FontWeight="SemiBold" Foreground="{DynamicResource Brush.SidebarText}"/>
+                            </StackPanel>
+                            <TextBlock x:Name="AnsText" FontSize="18" FontWeight="SemiBold" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"
+                                       FontFamily="{StaticResource DisplayFont}" Foreground="{DynamicResource Brush.SidebarText}"/>
+                            <TextBlock x:Name="AnsDetail" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap" Foreground="{DynamicResource Brush.SidebarMuted}"/>
+                        </StackPanel>
+                    </Border>
+                    <Button x:Name="CompactButton" Style="{StaticResource SidebarButton}" Click="Compact_Click" ToolTip="Shrink to a small calculator (Ctrl+Shift+M)">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE92C;" Style="{StaticResource Icon}" FontSize="16" Width="30"/>
+                            <TextBlock x:Name="CompactLabel" Text="Compact calculator" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="ThemeButton" Style="{StaticResource SidebarButton}" Click="Theme_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="ThemeGlyph" Style="{StaticResource Icon}" FontSize="16" Width="30"/>
+                            <TextBlock x:Name="ThemeLabel" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="SettingsButton" Style="{StaticResource SidebarButton}" Click="Settings_Click" ToolTip="Settings (Ctrl+,)">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE713;" Style="{StaticResource Icon}" FontSize="16" Width="30"/>
+                            <TextBlock x:Name="SettingsLabel" Text="Settings" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Navigation -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False" Margin="0,0,0,8">
+                    <StackPanel>
+                        <TextBlock x:Name="Heading1" Text="CALCULATE" FontSize="11" FontWeight="SemiBold" Margin="14,0,0,6" Foreground="{DynamicResource Brush.SidebarHeading}"/>
+                        <ItemsControl x:Name="NavCalc" Focusable="False">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <RadioButton Style="{StaticResource NavRadio}" GroupName="MainNav" IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                 ToolTip="{Binding Tagline}" AutomationProperties.Name="{Binding Name}" Checked="Nav_Checked"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock x:Name="Heading2" Text="TOOLS" FontSize="11" FontWeight="SemiBold" Margin="14,14,0,6" Foreground="{DynamicResource Brush.SidebarHeading}"/>
+                        <ItemsControl x:Name="NavTools" Focusable="False">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <RadioButton Style="{StaticResource NavRadio}" GroupName="MainNav" IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                 ToolTip="{Binding Tagline}" AutomationProperties.Name="{Binding Name}" Checked="Nav_Checked"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!-- ===== Content ===== -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- page header -->
+            <DockPanel x:Name="PageHeader" Margin="36,26,36,18">
+                <StackPanel x:Name="HeaderActions" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="HeaderCompact" Style="{StaticResource GhostButton}" Click="Compact_Click" ToolTip="Shrink to a small calculator (Ctrl+Shift+M)">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE92C;" Style="{StaticResource Icon}" FontSize="14" Margin="0,0,8,0"/>
+                            <TextBlock Text="Compact"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock x:Name="PageTitle" Style="{StaticResource PageTitle}" Text="Standard"/>
+                    <TextBlock x:Name="PageSubtitle" Style="{StaticResource PageSubtitle}"/>
+                </StackPanel>
+            </DockPanel>
+
+            <!-- compact-mode bar (replaces the header) -->
+            <DockPanel x:Name="CompactBar" Margin="10,8,10,4" Visibility="Collapsed">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <ToggleButton x:Name="PinToggle" Style="{StaticResource IconToggle}" Width="34" MinWidth="34" Height="34" Margin="0,0,6,0"
+                                  Click="Pin_Click" ToolTip="Keep on top" AutomationProperties.Name="Keep on top">
+                        <TextBlock Style="{StaticResource Icon}" Text="&#xE718;" FontSize="14"/>
+                    </ToggleButton>
+                    <Button Style="{StaticResource IconButton}" Width="34" Height="34" Margin="0,0,6,0" Click="CompactHistory_Click"
+                            ToolTip="History (Ctrl+H)" AutomationProperties.Name="History">
+                        <TextBlock Style="{StaticResource Icon}" Text="&#xE81C;" FontSize="14"/>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}" Width="34" Height="34" Click="Compact_Click"
+                            ToolTip="Back to the full window (Ctrl+Shift+M)" AutomationProperties.Name="Full window">
+                        <TextBlock Style="{StaticResource Icon}" Text="&#xE92D;" FontSize="14"/>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="pack://application:,,,/Assets/sumthing-256.png" Width="20" Height="20" Margin="2,0,8,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock FontFamily="{StaticResource DisplayFont}" FontSize="15" FontWeight="Bold" VerticalAlignment="Center">
+                        <Run Text="Sum"/><Run Text="thing" Foreground="{DynamicResource Brush.Accent}"/>
+                    </TextBlock>
+                </StackPanel>
+            </DockPanel>
+
+            <!-- pages -->
+            <Grid x:Name="PageHost" Grid.Row="1" Margin="36,0,36,24">
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="PageShift"/>
+                </Grid.RenderTransform>
+                <v:StandardView x:Name="StandardPage"/>
+                <v:ScientificView x:Name="ScientificPage" Visibility="Collapsed"/>
+                <v:GraphView x:Name="GraphPage" Visibility="Collapsed"/>
+                <v:StatsView x:Name="StatsPage" Visibility="Collapsed"/>
+                <v:SumsView x:Name="SumsPage" Visibility="Collapsed"/>
+                <v:ConverterView x:Name="ConverterPage" Visibility="Collapsed"/>
+                <v:ToolsView x:Name="ToolsPage" Visibility="Collapsed"/>
+                <v:SettingsView x:Name="SettingsPage" Visibility="Collapsed"/>
+            </Grid>
+
+            <!-- status bar -->
+            <Border x:Name="StatusBar" Grid.Row="2" Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="0,1,0,0" Padding="18,6">
+                <DockPanel>
+                    <TextBlock x:Name="StatusRight" DockPanel.Dock="Right" Style="{StaticResource Muted}" FontSize="11.5"/>
+                    <TextBlock x:Name="StatusText" Style="{StaticResource Muted}" FontSize="11.5"/>
+                </DockPanel>
+            </Border>
+
+            <!-- toast -->
+            <Border x:Name="Toast" Grid.RowSpan="3" Visibility="Collapsed" Opacity="0" IsHitTestVisible="False"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,48"
+                    Background="{DynamicResource Brush.ToastBg}" CornerRadius="12" Padding="16,12" MaxWidth="460">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="ToastShift"/>
+                </Border.RenderTransform>
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="3" Opacity="0.25"/>
+                </Border.Effect>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE73E;" Style="{StaticResource Icon}" FontSize="14" Margin="0,0,10,0" Foreground="{DynamicResource Brush.Mint}"/>
+                    <TextBlock x:Name="ToastText" Foreground="{DynamicResource Brush.ToastText}" TextWrapping="Wrap"/>
+                </StackPanel>
             </Border>
         </Grid>
     </Grid>

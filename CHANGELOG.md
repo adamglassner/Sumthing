@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.0.0 (2026-11-17)
+
+A big update: a new look and a graphing calculator.
+
+- New design to match WillowWallet and Guardrail EHS: a dark sidebar, cards, a status bar and toasts. Light, Dark or follow Windows, with seven accent colours.
+- The window opens large and can be maximized. A **compact calculator** mode shrinks Sumthing to a small keypad (it can stay on top), and the sidebar collapses to icons (Ctrl+B).
+- The Classic look is now a keypad style: the Windows 7 calculator keys and display, in the full window or the compact calculator.
+- **Graphing**, modelled on the TI-84 Plus and TI-Nspire: functions (y=, f(x)=, g(x)=), inequalities with shading, polar (r=), parametric ((x(t), y(t))), relations in x and y (x²+y²=25), points and scatter plots of lists. Sliders appear for letters with no value (y = ax² + b) and can animate. Ten TI colours and four line styles.
+- Graph tools: drag to move, scroll to zoom, Shift+drag to zoom to a box; Zoom presets (Standard, Square, Decimal, Integer, Trig, Fit, Data); Window settings (Xmin…Yscl, Tmin/Tmax, θmin/θmax); Trace with the arrow keys; a Table (TblStart, ΔTbl); Analyze for zeros, minimum, maximum, intersections, value, dy/dx with the tangent line and ∫f(x)dx with the area shaded; key points (zeros, turning points, intercepts, intersections) marked automatically. Copy or save the graph as a picture.
+- **Scientific**: a TI-style home screen with Ans, STO→ (5→A), ►Frac and ►Dec, lists ({1,2,3}→L1), radians or degrees, and MATH, STAT · PROB and CALC menus: nCr, nPr, !, abs, round, gcd, lcm, nDeriv, fnInt, Σ, mean, median, stdDev, normalcdf, invNorm, binompdf and more.
+- **Statistics**: lists L1–L6, 1-Var and 2-Var Stats (with quartiles the way the TI works them out), and Linear, Quadratic, Cubic, Quartic, Exponential, Logarithmic and Power regressions with r and r². One click plots the data and the fitted curve.
+- Scientific, Graphing and Statistics share stored values, lists and functions, like one calculator's memory: f1(3) on the home screen uses the graph's f1.
+- The Standard page shows the tape and history beside the calculator.
+- New icons from Fluent UI System Icons, like the other Bytehawk Studio apps.
+
 ## 1.0.0 (2026-11-09)
 
 First release of Sumthing, a calculator for Windows 10 and 11 by Bytehawk Studio.
