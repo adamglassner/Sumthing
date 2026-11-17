@@ -6,7 +6,7 @@
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                 <ToggleButton x:Name="HelpToggle" Style="{StaticResource IconToggle}" Width="32" Height="32" Click="Help_Click"
                               ToolTip="What can I type?" AutomationProperties.Name="What can I type">
-                    <TextBlock Style="{StaticResource Icon}" Text="&#xE897;" FontSize="14"/>
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xE9CE;" FontSize="14"/>
                 </ToggleButton>
                 <Button Style="{StaticResource IconButton}" Width="32" Height="32" Click="CopyAll_Click"
                         ToolTip="Copy the sheet with its answers" AutomationProperties.Name="Copy sheet">
@@ -35,7 +35,7 @@
         <Border DockPanel.Dock="Bottom" Margin="0,8,0,0" Padding="12,8" Background="{DynamicResource Brush.SurfaceAlt}"
                 BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="{DynamicResource KeyRadius}">
             <DockPanel>
-                <Button x:Name="SendButton" DockPanel.Dock="Right" Content="Use in calculator" Padding="10,4" MinHeight="28" MinWidth="0"
+                <Button x:Name="SendButton" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Content="Use in calculator" Padding="12,0" Height="32" MinHeight="0" MinWidth="0"
                         Click="Send_Click" ToolTip="Put the last answer on the Standard calculator"/>
                 <TextBlock Text="Last answer" Foreground="{DynamicResource Brush.TextMuted}" VerticalAlignment="Center"/>
                 <TextBlock x:Name="LastAnswer" Text="—" FontWeight="SemiBold" FontSize="18" Margin="10,0"

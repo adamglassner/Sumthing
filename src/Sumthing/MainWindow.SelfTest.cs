@@ -292,6 +292,13 @@ public partial class MainWindow
             Assert(g.Sliders.ContainsKey("a") && g.Sliders.ContainsKey("b") && g.Sliders.Count == 2, "a and b become sliders");
             g.Sliders["a"].Value = 2; g.Sliders["b"].Value = 3; g.PushSliders();
             AreEqual("11", Parser.Format(g.EvalFunction(g.Compiled[8], 2)), "ax²+b with a=2, b=3 at x=2");
+            g.Context.Lists["L1"] = new double[] { 2, 4, 6 };
+            g.Context.Lists["L2"] = new double[] { 10, 20, 30 };
+            g.Rows.Add(new GraphRow { Text = "(L1/2, L2*10)" });
+            g.Recompile();
+            var pts = g.EvalPoints(g.Compiled[^1]);
+            AreEqual("1,2,3 / 100,200,300", string.Join(",", pts.X) + " / " + string.Join(",", pts.Y), "list arithmetic in a scatter plot");
+            Assert(!g.Sliders.ContainsKey("L1"), "lists aren't sliders");
         });
 
         // ---------------------------------------------------------------- the window

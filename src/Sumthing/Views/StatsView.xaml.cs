@@ -32,7 +32,7 @@ public partial class StatsView : UserControl
         InitializeComponent();
         for (int i = 0; i < 6; i++)
         {
-            var panel = new DockPanel { Margin = new Thickness(i == 0 ? 0 : 4, 0, i == 5 ? 0 : 4, 0) };
+            var panel = new DockPanel { Margin = new Thickness(i == 0 ? 0 : 3, 0, i == 5 ? 0 : 3, 0) };
             var head = new DockPanel { Margin = new Thickness(2, 0, 2, 6) };
             var count = new TextBlock { FontSize = 11.5, VerticalAlignment = VerticalAlignment.Center };
             count.SetResourceReference(TextBlock.ForegroundProperty, "Brush.TextMuted");
@@ -44,7 +44,7 @@ public partial class StatsView : UserControl
             var box = new TextBox
             {
                 AcceptsReturn = true, TextWrapping = TextWrapping.NoWrap, VerticalContentAlignment = VerticalAlignment.Top,
-                FontFamily = (FontFamily)FindResource("MonoFont"), FontSize = 13.5, Padding = new Thickness(8, 6, 8, 6),
+                FontFamily = (FontFamily)FindResource("MonoFont"), FontSize = 13, Padding = new Thickness(3, 6, 5, 6),
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto, TextAlignment = TextAlignment.Right,
             };
             System.Windows.Automation.AutomationProperties.SetName(box, $"List L{i + 1}");

@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="380"/>
+            <ColumnDefinition Width="*" MinWidth="330"/>
             <ColumnDefinition Width="16"/>
-            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="0.8*" MinWidth="330" MaxWidth="420"/>
         </Grid.ColumnDefinitions>
 
         <Border Style="{StaticResource Card}">

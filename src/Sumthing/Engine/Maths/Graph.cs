@@ -414,6 +414,26 @@ public sealed class GraphModel
     public (double[] X, double[] Y) EvalPoints(CompiledRow c)
     {
         if (c.XExpr == null) return (c.PointsX, c.PointsY);
+        // (L1/2, L2*10): work the expression out for each item of the lists, like a TI-Nspire
+        var lists = c.FreeNames.Where(n => Context.Lists.ContainsKey(n)).ToList();
+        if (lists.Count > 0 && c.XExpr is not ListNode)
+        {
+            int n = lists.Min(l => Context.Lists[l].Length);
+            var xs = new double[n];
+            var ys = new double[n];
+            try
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    foreach (var l in lists) Context.Locals[l] = Context.Lists[l][i];
+                    xs[i] = c.XExpr.Eval(Context);
+                    ys[i] = c.YExpr.Eval(Context);
+                }
+            }
+            catch (MathException) { return (Array.Empty<double>(), Array.Empty<double>()); }
+            finally { foreach (var l in lists) Context.Locals.Remove(l); }
+            return (xs, ys);
+        }
         try
         {
             if (c.XExpr is ListNode lx && c.YExpr is ListNode ly) return (lx.EvalAll(Context), ly.EvalAll(Context));

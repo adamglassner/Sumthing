@@ -199,6 +199,16 @@ public partial class GraphView : UserControl
         Recompile();
         UpdateAngle();
         Loaded += (_, _) => Plot.Refresh();
+        SizeChanged += (_, e) =>
+        {
+            // on a small window the Analyze / Table / Window panel tucks away (the toolbar button brings it back)
+            bool narrow = e.NewSize.Width < 1000;
+            if (narrow != _narrow)
+            {
+                _narrow = narrow;
+                if (!_sideChosen) ShowSidePanel(!narrow);
+            }
+        };
         IsVisibleChanged += (_, _) => { if (!IsVisible) foreach (var s in _sliders) s.Stop(); };
     }
 
@@ -479,9 +489,17 @@ public partial class GraphView : UserControl
         Plot.InvalidateVisual();
     }
 
+    private bool _narrow, _sideChosen;
+
     private void Side_Click(object sender, RoutedEventArgs e)
     {
-        bool show = SideToggle.IsChecked == true;
+        _sideChosen = true;
+        ShowSidePanel(SideToggle.IsChecked == true);
+    }
+
+    public void ShowSidePanel(bool show)
+    {
+        SideToggle.IsChecked = show;
         SidePanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
         SideColumn.Width = show ? new GridLength(300) : new GridLength(0);
     }
@@ -512,6 +530,7 @@ public partial class GraphView : UserControl
 
     public void ShowSideTab(int tab)
     {
+        if (SidePanel.Visibility != Visibility.Visible) ShowSidePanel(true);
         TabAnalyze.IsChecked = tab == 0; TabTable.IsChecked = tab == 1; TabWindow.IsChecked = tab == 2;
         AnalyzePanel.Visibility = tab == 0 ? Visibility.Visible : Visibility.Collapsed;
         TablePanel.Visibility = tab == 1 ? Visibility.Visible : Visibility.Collapsed;

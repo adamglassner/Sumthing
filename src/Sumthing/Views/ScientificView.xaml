@@ -4,9 +4,9 @@
              xmlns:v="clr-namespace:Sumthing.Views">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="340"/>
+            <ColumnDefinition Width="*" MinWidth="300"/>
             <ColumnDefinition Width="16"/>
-            <ColumnDefinition Width="430"/>
+            <ColumnDefinition Width="1.05*" MinWidth="380" MaxWidth="470"/>
         </Grid.ColumnDefinitions>
 
         <!-- ===== home screen ===== -->

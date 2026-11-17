@@ -102,12 +102,22 @@ public partial class MainWindow : Window
         MathState.Changed += UpdateAnsCard;
         SettingsService.Changed += () => { if (IsCompact) Topmost = S.AlwaysOnTop; };
 
+        SizeChanged += (_, e) =>
+        {
+            if (IsCompact) return;
+            bool narrow = e.NewSize.Width < 1180;
+            if (narrow == _narrowWindow) return;
+            _narrowWindow = narrow;
+            // small windows get the icon sidebar so the pages have room; wide ones go back to the user's choice
+            ApplySidebar(narrow || S.SidebarCollapsed);
+        };
         PreviewKeyDown += OnPreviewKeyDown;
         PreviewTextInput += OnPreviewTextInput;
         Closing += OnClosing;
         Loaded += async (_, _) =>
         {
-            SetSidebar(S.SidebarCollapsed);
+            _narrowWindow = ActualWidth < 1180;
+            ApplySidebar(S.SidebarCollapsed || _narrowWindow);
             SetMode(S.Mode, animate: false);
             if (S.CompactMode) SetCompact(true);
             UpdateAnsCard();
@@ -210,11 +220,19 @@ public partial class MainWindow : Window
 
     // ================================================================ sidebar collapse
 
+    private bool _narrowWindow;
+
     private void Collapse_Click(object sender, RoutedEventArgs e) => SetSidebar(SidebarColumn.Width.Value > 100);
 
+    /// <summary>The user's choice (remembered).</summary>
     public void SetSidebar(bool collapsed)
     {
         S.SidebarCollapsed = collapsed;
+        ApplySidebar(collapsed);
+    }
+
+    private void ApplySidebar(bool collapsed)
+    {
         SidebarColumn.Width = new GridLength(collapsed ? 76 : 248);
         Sidebar.Padding = collapsed ? new Thickness(10, 20, 10, 14) : new Thickness(16, 20, 16, 14);
         var vis = collapsed ? Visibility.Collapsed : Visibility.Visible;
@@ -257,7 +275,7 @@ public partial class MainWindow : Window
         }
 
         Sidebar.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
-        SidebarColumn.Width = compact ? new GridLength(0) : new GridLength(S.SidebarCollapsed ? 76 : 248);
+        SidebarColumn.Width = compact ? new GridLength(0) : new GridLength(S.SidebarCollapsed || _narrowWindow ? 76 : 248);
         PageHeader.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
         CompactBar.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
         StatusBar.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;

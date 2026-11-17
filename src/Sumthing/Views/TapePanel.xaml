@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border x:Name="Frame" Background="Transparent">
         <DockPanel>
-            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <TextBlock DockPanel.Dock="Bottom" Style="{StaticResource Hint}" Margin="2,8,0,0" TextWrapping="Wrap" Text="Every step prints here, like an adding machine. Click beside a number to add a note."/>
+            <DockPanel DockPanel.Dock="Top" Margin="0,-44,0,8" HorizontalAlignment="Right">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <Button Style="{StaticResource IconButton}" Width="34" Height="34" Margin="6,0,0,0" Click="Copy_Click" ToolTip="Copy the tape" AutomationProperties.Name="Copy the tape">
                         <TextBlock Style="{StaticResource Icon}" Text="&#xE8C8;" FontSize="14"/>
@@ -18,7 +19,7 @@
                         <TextBlock Style="{StaticResource Icon}" Text="&#xE74D;" FontSize="14"/>
                     </Button>
                 </StackPanel>
-                <TextBlock Style="{StaticResource Hint}" VerticalAlignment="Center" TextWrapping="Wrap" Text="Every step prints here, like an adding machine. Click beside a number to add a note."/>
+                
             </DockPanel>
 
             <!-- the paper -->
