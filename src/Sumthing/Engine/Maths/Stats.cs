@@ -141,7 +141,7 @@ public static class Stats
             {
                 Check(x, y, 2);
                 if (y.Any(v => v <= 0)) throw new MathException("Exponential fits need every y above 0");
-                var (m, k, r) = LinearFit(x, y.Select(System.Math.Log).ToArray());
+                var (m, k, r) = LinearFit(x, y.Select(v => System.Math.Log(v)).ToArray());
                 double a = System.Math.Exp(k), b = System.Math.Exp(m);
                 return new RegressionResult
                 {
@@ -153,7 +153,7 @@ public static class Stats
             {
                 Check(x, y, 2);
                 if (x.Any(v => v <= 0)) throw new MathException("Logarithmic fits need every x above 0");
-                var (b, a, r) = LinearFit(x.Select(System.Math.Log).ToArray(), y);
+                var (b, a, r) = LinearFit(x.Select(v => System.Math.Log(v)).ToArray(), y);
                 return new RegressionResult
                 {
                     Model = model, Coefficients = new[] { a, b }, R = r, R2 = r * r, Form = "y = a + b·ln(x)",
@@ -164,7 +164,7 @@ public static class Stats
             {
                 Check(x, y, 2);
                 if (x.Any(v => v <= 0) || y.Any(v => v <= 0)) throw new MathException("Power fits need every x and y above 0");
-                var (b, k, r) = LinearFit(x.Select(System.Math.Log).ToArray(), y.Select(System.Math.Log).ToArray());
+                var (b, k, r) = LinearFit(x.Select(v => System.Math.Log(v)).ToArray(), y.Select(v => System.Math.Log(v)).ToArray());
                 double a = System.Math.Exp(k);
                 return new RegressionResult
                 {
@@ -226,7 +226,7 @@ public static class Stats
         }
         var low = new double[m];
         for (int i = 0; i < m; i++) low[i] = Clean(A[i, m] / A[i, i]);
-        return low.Reverse().ToArray();
+        return Enumerable.Reverse(low).ToArray();
     }
 
     private static double Clean(double v) => System.Math.Abs(v) < 1e-10 ? 0 : System.Math.Abs(v - System.Math.Round(v)) < 1e-9 ? System.Math.Round(v) : v;
